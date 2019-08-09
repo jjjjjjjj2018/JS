@@ -145,9 +145,7 @@ const toCreate = props => {
 const toEdit = props => {
     return (
         <EditIcon 
-        onClick={() => { props.history.push('/edit'); }} 
-        > 
-        Edit
+        onClick={() => { props.history.push('/edit'); }}  > 
         </EditIcon>
     );
 };
@@ -212,7 +210,7 @@ class App extends React.Component {
                                     Users
                                     </Typography>
                                 <TextField type='text' value={item} onChange={this.handleSearch} placeholder='search' />
-                                <IconButton><WithCreateButton />Create New User</IconButton>
+                                <IconButton><WithCreateButton/></IconButton>
                                 <div className={classes.tableWrapper}>
                                     <Table
                                         className={classes.table}
@@ -237,7 +235,7 @@ class App extends React.Component {
                                                                 lastName = {row.lastName}
                                                                 gender = {row.gender}
                                                                 age = {row.age}
-                                                                />Edit</IconButton>
+                                                                /></IconButton>
 
                                                             </TableCell>
                                                             <TableCell><IconButton aria-label="delete"
