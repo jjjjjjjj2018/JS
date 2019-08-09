@@ -226,7 +226,7 @@ class App extends React.Component {
                                                 .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                                                 .filter(searchingFor(item))
                                                 .map(row => {
-                                                    return (
+                                                    return ( 
                                                         <TableRow key={row._id} hover tabIndex={-1}>
                                                             <TableCell>
                                                                 <IconButton aria-label="edit"><WithEditButton 
