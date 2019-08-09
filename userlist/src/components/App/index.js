@@ -89,8 +89,6 @@ class EnhancedTableHead extends React.Component {
     }
 }
 
-
-
 EnhancedTableHead.propTypes = {
     classes: PropTypes.object.isRequired,
     onRequestSort: PropTypes.func.isRequired,
