@@ -1,7 +1,6 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
 
-
 const toHome = props => {
     return (
         <button

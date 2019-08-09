@@ -17,7 +17,11 @@ const toCreate = props => {
       Create
     </button>
   );
-};const WithCreateButton = withRouter(toCreate);
+};
+
+const WithCreateButton = withRouter(toCreate);
+
+
 const Edit = () => (
   <div>
     <h2>Edit Done</h2>
@@ -50,8 +54,9 @@ const toEdit = props => {
   );
 };
 
-
 const WithEditButton = withRouter(toEdit);
+
+
 /* Login component */
 const List = props => {
   console.log(props);

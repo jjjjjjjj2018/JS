@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { getAll, deleteUser, editUser, createUser, getOne } from "../../redux/action-creators";
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -47,6 +47,20 @@ function getSorting(order, orderBy) {
 function searchingFor(item) {
     return function (x) {
         return x.firstName.includes(item) || x.lastName.includes(item) || x.gender.includes(item) || x.age.toString().includes(item) || !item;
+    }
+}
+/*function deleteOne(id) {
+    return function (x) {
+        return x._id !== id;
+    }
+
+}*/
+function deleteOne(list, id) {
+    for (let i = 0; i < list.length; i++) {
+        if (list[i]._id === id) {
+            return list.splice(i, 1);
+        }
+
     }
 }
 
@@ -132,18 +146,15 @@ const styles = makeStyles(theme => ({
 
 const toCreate = props => {
     return (
-        <AddIcon
-            onClick={() => {
-                props.history.push('/create');
-            }}>
-            Create
-      </AddIcon>
+        <Link to='/create'>
+            <AddIcon>
+            </AddIcon></Link>
     );
 };
 const toEdit = props => {
     return (
-        <EditIcon 
-        onClick={() => { props.history.push('/edit'); }}  > 
+        <EditIcon
+            onClick={() => { props.history.push('/edit'); }}> <Link to='/edit'> edit</Link>
         </EditIcon>
     );
 };
@@ -156,6 +167,7 @@ class App extends React.Component {
     componentDidMount() {
         this.props.getAllUsers();
     }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -165,8 +177,9 @@ class App extends React.Component {
             orderBy: '_id',
             page: 0,
             rowsPerPage: 5,
-            item: ''
+            item: '',
         }
+
         this.handleSearch = this.handleSearch.bind(this);
     }
 
@@ -187,15 +200,15 @@ class App extends React.Component {
     handleSearch(event) {
         this.setState({ item: event.target.value });
     }
-    handleDelete() {
-
+    handleDelete = (id) => {
+        console.log(id);
+        this.props.deleteUser(id);
+        this.props.userList.list = deleteOne(this.props.userList.list, id);
     }
 
     render() {
-          console.log(this.props);
         const { classes } = this.props;
         const { list, isLoading, error } = this.props.userList;
-        const emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, list.length - this.state.page * this.state.rowsPerPage);
         const item = this.state.item;
         return (
             <div className={classes.root}>
@@ -208,7 +221,7 @@ class App extends React.Component {
                                     Users
                                     </Typography>
                                 <TextField type='text' value={item} onChange={this.handleSearch} placeholder='search' />
-                                <IconButton><WithCreateButton/></IconButton>
+                                <IconButton><WithCreateButton /></IconButton>
                                 <div className={classes.tableWrapper}>
                                     <Table
                                         className={classes.table}
@@ -221,24 +234,24 @@ class App extends React.Component {
                                         />
                                         <TableBody>
                                             {stableSort(list, getSorting(this.state.order, this.state.orderBy))
-                                                .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                                                 .filter(searchingFor(item))
+                                                .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                                                 .map(row => {
-                                                    return ( 
+                                                    return (
                                                         <TableRow key={row._id} hover tabIndex={-1}>
                                                             <TableCell>
-                                                                <IconButton aria-label="edit"><WithEditButton 
-                                                                id= {row._id}
-                                                                firstName = {row.firstName}
-                                                                lastName = {row.lastName}
-                                                                gender = {row.gender}
-                                                                age = {row.age}
+                                                                <IconButton aria-label="edit"><WithEditButton
+                                                                    id={row._id}
+                                                                    firstName={row.firstName}
+                                                                    lastName={row.lastName}
+                                                                    gender={row.gender}
+                                                                    age={row.age}
                                                                 /></IconButton>
 
                                                             </TableCell>
                                                             <TableCell><IconButton aria-label="delete"
-                                                                onClick={() => this.props.deleteUser(row._id)}>
-                                                                <DeleteIcon />Delete</IconButton></TableCell>
+                                                                onClick={() => this.handleDelete(row._id)}>
+                                                                <DeleteIcon /></IconButton></TableCell>
                                                             <TableCell align="left">{row.firstName}</TableCell>
                                                             <TableCell align="left">{row.lastName}</TableCell>
                                                             <TableCell align="left">{row.gender}</TableCell>
@@ -246,11 +259,7 @@ class App extends React.Component {
                                                         </TableRow>
                                                     );
                                                 })}
-                                            {emptyRows > 0 && (
-                                                <TableRow style={{ height: 49 * emptyRows }}>
-                                                    <TableCell colSpan={6} />
-                                                </TableRow>
-                                            )}
+
                                         </TableBody>
                                     </Table>
                                 </div>
