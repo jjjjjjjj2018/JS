@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { getAll, deleteUser, editUser, createUser, getOne } from "../../redux/action-creators";
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -185,7 +185,6 @@ class App extends React.Component {
         this.setState({ item: event.target.value });
     }
     handleDelete = (id) => {
-        console.log(id);
         this.props.deleteUser(id);
         this.props.userList.list = deleteOne(this.props.userList.list, id);
     }
@@ -200,8 +199,7 @@ class App extends React.Component {
                     list, isLoading, error
                 },
                 classes,
-            },
-            handleChangePage,
+            }
         } = this;
 
         return (

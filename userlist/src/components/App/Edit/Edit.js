@@ -1,6 +1,9 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
 
+import { connect } from "react-redux";
+import { getAll, deleteUser, editUser, createUser, getOne } from "../../../redux/action-creators";
+
 const toHome = props => {
     return (
         <button
@@ -31,5 +34,30 @@ class Edit extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        userList: state.userList
+    };
+};
 
-export default Edit;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getAllUsers: () => {
+            dispatch(getAll());
+        },
+        getOneUser: (id) => {
+            dispatch(getOne(id));
+        },
+        deleteUser: (id) => {
+            dispatch(deleteUser(id));
+        },
+        createUser: () => {
+            dispatch(createUser());
+        },
+        editUser: (id) => {
+            dispatch(editUser(id));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Edit);
