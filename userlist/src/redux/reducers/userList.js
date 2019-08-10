@@ -3,7 +3,6 @@ const initState = {
     list: [],
     error: null
 };
-
 const userList = (state = initState, action) => {
     switch (action.type) {
         case "GET_ALL_START":

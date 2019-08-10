@@ -49,18 +49,12 @@ function searchingFor(item) {
         return x.firstName.includes(item) || x.lastName.includes(item) || x.gender.includes(item) || x.age.toString().includes(item) || !item;
     }
 }
-/*function deleteOne(id) {
-    return function (x) {
-        return x._id !== id;
-    }
 
-}*/
 function deleteOne(list, id) {
     for (let i = 0; i < list.length; i++) {
         if (list[i]._id === id) {
             return list.splice(i, 1);
         }
-
     }
 }
 
@@ -144,20 +138,10 @@ const styles = makeStyles(theme => ({
     }
 }));
 
-const toCreate = props => {
-    return (
-        <Link to='/create'>
-            <AddIcon>
-            </AddIcon></Link>
-    );
-};
-const toEdit = props => {
-    return (
-        <EditIcon
-            onClick={() => { props.history.push('/edit'); }}> <Link to='/edit'> edit</Link>
-        </EditIcon>
-    );
-};
+const toCreate = props => <AddIcon onClick={() => { props.history.push('/create') }} />;
+
+const toEdit = props => <EditIcon onClick={() => { props.history.push('/edit'); }} />;
+
 
 const WithEditButton = withRouter(toEdit);
 const WithCreateButton = withRouter(toCreate);
@@ -207,9 +191,19 @@ class App extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
-        const { list, isLoading, error } = this.props.userList;
-        const item = this.state.item;
+        const {
+            state: {
+                item,
+            },
+            props: {
+                userList: {
+                    list, isLoading, error
+                },
+                classes,
+            },
+            handleChangePage,
+        } = this;
+
         return (
             <div className={classes.root}>
                 {isLoading && <div>Loading ...</div>}

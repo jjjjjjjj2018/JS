@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
-import {BrowserRouter, Route, withRouter} from 'react-router-dom';
-
+import React, { Component } from 'react';
+import { BrowserRouter, Route, withRouter } from 'react-router-dom';
 /* Home component */
 const Create = () => (
   <div>
@@ -73,13 +72,13 @@ const List = props => {
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
-        <div>
-          <Route exact path="/" component={List} />
-          <Route exact path="/create" component={Create} />
-          <Route exact path="/edit" component={Edit} />
-        </div>
-      </BrowserRouter>
+        <BrowserRouter>
+          <div>
+            <Route exact path="/" component={List} />
+            <Route exact path="/create" component={Create} />
+            <Route exact path="/edit" component={Edit} />
+          </div>
+        </BrowserRouter>
     );
   }
 }

@@ -3,8 +3,8 @@ import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import App from './components/App';
-import Edit from './components/App';
-import Create from './components/App';
+import Edit from './components/App/Edit/Edit';
+import Create from './components/App/Create/Create';
 import store from "./redux/store";
 import { Route } from 'react-router';
 
