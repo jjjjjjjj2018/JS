@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getAll, deleteUser, editUser, createUser, getOne } from "../../redux/action-creators";
+import { getAll, deleteUser } from "../../redux/action-creators";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
@@ -140,7 +140,9 @@ const styles = makeStyles(theme => ({
 
 const toCreate = props => <AddIcon onClick={() => { props.history.push('/create') }} />;
 
-const toEdit = props => <EditIcon onClick={() => { props.history.push('/edit'); }} />;
+const toEdit = props => <EditIcon onClick={() => {
+    props.history.push({ pathname: '/edit', state: { user: props.user } });
+}} />;
 
 
 const WithEditButton = withRouter(toEdit);
@@ -233,11 +235,7 @@ class App extends React.Component {
                                                         <TableRow key={row._id} hover tabIndex={-1}>
                                                             <TableCell>
                                                                 <IconButton aria-label="edit"><WithEditButton
-                                                                    id={row._id}
-                                                                    firstName={row.firstName}
-                                                                    lastName={row.lastName}
-                                                                    gender={row.gender}
-                                                                    age={row.age}
+                                                                    user={row}
                                                                 /></IconButton>
 
                                                             </TableCell>
@@ -289,17 +287,8 @@ const mapDispatchToProps = (dispatch) => {
         getAllUsers: () => {
             dispatch(getAll());
         },
-        getOneUser: (id) => {
-            dispatch(getOne(id));
-        },
         deleteUser: (id) => {
             dispatch(deleteUser(id));
-        },
-        createUser: () => {
-            dispatch(createUser());
-        },
-        editUser: (id) => {
-            dispatch(editUser(id));
         }
     };
 };

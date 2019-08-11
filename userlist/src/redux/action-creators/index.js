@@ -21,23 +21,6 @@ function getAllFail(error) {
   };
 }
 
-function getOneStart() {
-  return {
-    type: 'GET_ONE_START',
-  };
-}
-function getOneSuccess(response) {
-  return {
-    type: 'GET_ONE_SUCCESS',
-    data: response.data,
-  };
-}
-function getOneFail(error) {
-  return {
-    type: 'GET_ONE_FAIL',
-    error,
-  };
-}
 //delete one user action
 function deleteOneStart() {
   return {
@@ -108,20 +91,6 @@ export function getAll() {
   };
 }
 
-export function getOne(id) {
-  return (dispatch) => {
-    dispatch(getOneStart());
-    axios
-      .get(`http://localhost:8080/users/${id}`)
-      .then(response => {
-        dispatch(getOneSuccess(response));
-      })
-      .catch(err => {
-        dispatch(getOneFail(err));
-      });
-  };
-}
-
 export function deleteUser(id) {
   return (dispatch) => {
     dispatch(deleteOneStart());
@@ -134,11 +103,11 @@ export function deleteUser(id) {
   };
 }
 
-export function createUser() {
-  return (dispatch, store) => {
+export function createUser(user) {
+  return (dispatch) => {
     dispatch(createOneStart());
     axios
-      .post('http://localhost:8080/users/create')
+      .post('http://localhost:8080/users/create',user)
       .then(dispatch(createOneSuccess()))
       .catch(err => {
         dispatch(createOneFail(err));
@@ -146,11 +115,11 @@ export function createUser() {
   };
 }
 
-export function editUser(id) {
+export function editUser(id,user) {
   return (dispatch) => {
     dispatch(editOneStart());
     axios
-      .post(`http://localhost:8080/users/edit/${id}`)
+      .post(`http://localhost:8080/users/edit/${id}`,user)
       .then(
         dispatch(editOneSuccess()))
       .catch(err => {

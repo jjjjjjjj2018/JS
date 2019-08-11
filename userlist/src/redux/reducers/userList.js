@@ -23,24 +23,6 @@ const userList = (state = initState, action) => {
                 isLoading: false,
                 error: action.err
             };
-        case "GET_ONE_START":
-            return {
-                ...state,
-                isLoading: true
-            };
-        case "GET_ONE_SUCCESS":
-            return {
-                ...state,
-                isLoading: false,
-                list: action.data,
-                error: null
-            };
-        case "GET_ONE_FAIL":
-            return {
-                ...state,
-                isLoading: false,
-                error: action.err
-            };
         case "DELETE_ONE_START":
             return {
                 ...state,
