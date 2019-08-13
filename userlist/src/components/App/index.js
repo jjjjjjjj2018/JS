@@ -159,7 +159,7 @@ class App extends React.Component {
         this.state = {
             error: null,
             isLoading: false,
-            order: 'asc',
+            order: 'desc',
             orderBy: '_id',
             page: 0,
             rowsPerPage: 5,
@@ -197,10 +197,7 @@ class App extends React.Component {
                 item,
             },
             props: {
-                userList: {
-                    list, isLoading, error
-                },
-                classes,
+                userList: { list, isLoading, error }, classes,
             }
         } = this;
 
@@ -214,7 +211,8 @@ class App extends React.Component {
                                 <Typography variant="h4" id="tableTitle">
                                     Users
                                     </Typography>
-                                <TextField type='text' value={item} onChange={this.handleSearch} placeholder='search' />
+                                <br />
+                                <TextField right='10' type='text' value={item} onChange={this.handleSearch} placeholder='search' />
                                 <IconButton><WithCreateButton /></IconButton>
                                 <div className={classes.tableWrapper}>
                                     <Table

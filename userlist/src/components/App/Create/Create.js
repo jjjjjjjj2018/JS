@@ -10,11 +10,8 @@ import Button from '@material-ui/core/Button';
 
 const create = props => {
     const { firstName, lastName, gender, age, password, repeatPassword } = props.user;
-    console.log(props.user);
     return (
-        <Button disabled={!firstName || !lastName || !gender || !age || !password || !repeatPassword} variant="contained" color="primary" onClick={() => {
-            createUser(props.user);
-            console.log(props.user)
+        <Button disabled={!firstName || !lastName || !gender || !age || !password || !repeatPassword || (password !== repeatPassword)} variant="contained" color="primary" onClick={() => {
             props.history.push('/');
         }}>
             <SaveIcon /> Create
@@ -22,8 +19,15 @@ const create = props => {
     );
 };
 
+const cancel = props => {
+    return (
+        <Button onClick={() => { props.history.push('/') }} />
+    );
+};
+
 
 const WithHomeButton = withRouter(create);
+const WithCancelButton = withRouter(cancel);
 
 class Create extends React.Component {
     constructor(props) {
@@ -99,7 +103,7 @@ class Create extends React.Component {
                     <br /><br />
                     <TextField
                         required
-                        error={user.password!==user.repeatPassword}
+                        error={user.password !== user.repeatPassword}
                         type='password'
                         id="repeatPassword"
                         label="Repeat Password"
@@ -108,7 +112,14 @@ class Create extends React.Component {
                     />
                 </form>
                 <br /><br />
-                <WithHomeButton user={user} />
+                <div onClick={() => {
+                    let newUser = user;
+                    delete newUser.repeatPassword;
+                    this.props.createUser(newUser);
+                }}>
+                    <WithHomeButton user={user} />
+                </div>
+                <WithCancelButton />
             </div>
         );
     }

@@ -10,16 +10,23 @@ import Button from '@material-ui/core/Button';
 const edit = props => {
     const { firstName, lastName, gender, age, password, repeatPassword } = props.user;
     return (
-        <Button disabled={!firstName || !lastName || !gender || !age || !password || !repeatPassword} variant="contained" color="primary" onClick={() => {
-            editUser(props.user.id, props.user);
-            props.history.push('/');
-        }}>
+        <Button disabled={!firstName || !lastName || !gender || !age || !password || !repeatPassword || (password !== repeatPassword)} variant="contained" color="primary"
+            onClick={() => {
+                props.history.push('/');
+            }}>
             <SaveIcon /> Save
         </Button>
     );
 };
 
+const cancel = props => {
+    return (
+        <Button onClick={() => { props.history.push('/') }} />
+    );
+};
+
 const WithHomeButton = withRouter(edit);
+const WithCancelButton = withRouter(cancel);
 
 
 class Edit extends React.Component {
@@ -72,7 +79,7 @@ class Edit extends React.Component {
                 <form >
                     <TextField
                         required
-                        id="standard-name"
+                        id="firstName"
                         label="First Name"
                         defaultValue={user.firstName}
                         margin="normal"
@@ -81,7 +88,7 @@ class Edit extends React.Component {
                     <br />
                     <TextField
                         required
-                        id="standard-uncontrolled"
+                        id="lastName"
                         label="Last Name"
                         defaultValue={user.lastName}
                         margin="normal"
@@ -90,7 +97,7 @@ class Edit extends React.Component {
                     <br />
                     <TextField
                         required
-                        id="standard-required"
+                        id="gender"
                         label="Sex"
                         defaultValue={user.gender}
                         margin="normal"
@@ -99,7 +106,7 @@ class Edit extends React.Component {
                     <br />
                     <TextField
                         required
-                        id="standard-error"
+                        id="age"
                         label="Age"
                         defaultValue={user.age}
                         margin="normal"
@@ -125,7 +132,17 @@ class Edit extends React.Component {
                         onChange={this.handleChange}
                     />
                 </form>
-                <WithHomeButton user={this.state.user} />
+                <div onClick={() => {
+                    let newUser = user;
+                    const id = user.id;
+                    delete newUser.repeatPassword;
+                    delete newUser.id;
+                    console.log(id, newUser);
+                    this.props.editUser(id, user);
+                }}>
+                    <WithHomeButton user={user} />
+                </div>
+                <WithCancelButton/>
             </div>
         );
     }
