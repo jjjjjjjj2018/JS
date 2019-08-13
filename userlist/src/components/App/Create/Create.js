@@ -21,7 +21,7 @@ const create = props => {
 
 const cancel = props => {
     return (
-        <Button onClick={() => { props.history.push('/') }} />
+        <Button variant="contained"  color='secondary' onClick={() => { props.history.push('/') }} > Cancel</Button>
     );
 };
 
@@ -111,7 +111,7 @@ class Create extends React.Component {
                         onChange={this.handleChange}
                     />
                 </form>
-                <br /><br />
+                <br />
                 <div onClick={() => {
                     let newUser = user;
                     delete newUser.repeatPassword;
@@ -119,6 +119,7 @@ class Create extends React.Component {
                 }}>
                     <WithHomeButton user={user} />
                 </div>
+                <br/>
                 <WithCancelButton />
             </div>
         );

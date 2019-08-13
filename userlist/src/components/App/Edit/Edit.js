@@ -21,7 +21,7 @@ const edit = props => {
 
 const cancel = props => {
     return (
-        <Button onClick={() => { props.history.push('/') }} />
+        <Button variant="contained"  color='secondary' onClick={() => { props.history.push('/') }}> Cancel</Button>
     );
 };
 
@@ -126,12 +126,12 @@ class Edit extends React.Component {
                         required
                         error={user.password !== user.repeatPassword}
                         id="repeatPassword"
-                        label="Retype Your Password"
+                        label="Repeat Password"
                         type="password"
                         margin="normal"
                         onChange={this.handleChange}
                     />
-                </form>
+                </form> <br/>
                 <div onClick={() => {
                     let newUser = user;
                     const id = user.id;
@@ -141,7 +141,7 @@ class Edit extends React.Component {
                     this.props.editUser(id, user);
                 }}>
                     <WithHomeButton user={user} />
-                </div>
+                </div><br/>
                 <WithCancelButton/>
             </div>
         );
