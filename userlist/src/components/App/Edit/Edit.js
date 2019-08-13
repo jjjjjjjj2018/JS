@@ -21,7 +21,7 @@ const edit = props => {
 
 const cancel = props => {
     return (
-        <Button variant="contained"  color='secondary' onClick={() => { props.history.push('/') }}> Cancel</Button>
+        <Button variant="contained"  onClick={() => { props.history.push('/') }}> Cancel</Button>
     );
 };
 
