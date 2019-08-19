@@ -17,14 +17,14 @@ router.route('/:id').get((req, res) => {
 });
 
 //get one user's children
-router.route('/:id/parent').get((req, res) => {
+router.route('/:id/children').get((req, res) => {
   Soldier.findById(req.params.id)
     .getChildren(children => res.json(children))
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
 //get one user's parent
-router.route('/:id/children').get((req, res) => {
+router.route('/:id/parent').get((req, res) => {
   Soldier.findById(req.params.id)
     .populate('parent')
     .then(soldier => res.json(soldier.parent))
@@ -33,21 +33,30 @@ router.route('/:id/children').get((req, res) => {
 
 //create new user
 router.route('/create').post((req, res) => {
-  const { img, name, sex, startDate, phone, rank, email, parent } = req.body;
+  console.log('creating');
+  const { /*img,*/ name, sex, parent/*, startDate, phone, rank, email*/ } = req.body;
   const newSoldier = new Soldier({
-    img,
+    // img,
     name,
     sex,
-    startDate,
+    /*startDate,
     phone,
     rank,
-    email
+    email*/
   });
-  newSoldier.parent = Soldier.findById(parent);
-  await newSoldier.save()
-    .then(() => res.json('User has been created.'))
-    .catch(err => res.status(400).json('Error: ' + err));
+  //newSoldier.parent = Soldier.findById(parent);
+  console.log(parent);
+  if (!parent)
+    newSoldier.save()
+      .then(() => res.json('Soldier has been created.'))
+      .catch(err => res.status(400).json('Error: ' + err));
 
+  if (parent) {
+    Soldier.findById(parent)
+      .save(soldier => { soldier.appendChild(newSoldier) })
+      .then(() => res.json('Soldier has been created.'))
+      .catch(err => res.status(400).json('Error: ' + err));
+  }
 
 });
 
@@ -57,13 +66,13 @@ router.route('/edit/:id').post((req, res) => {
     .then(soldier => {
       soldier.name = req.body.name;
       soldier.sex = req.body.sex;
-      soldier.startDate = req.body.startDate;
+      /*soldier.startDate = req.body.startDate;
       soldier.phone = req.body.phone;
       soldier.rank = req.body.rank;
       soldier.email = req.body.email;
-      soldier.parent = Soldier.findById(req.body.parent);
-      await soldier.save()
-        .then(() => res.json('User updated!'))
+      soldier.parent = Soldier.findById(req.body.parent);*/
+      soldier.save()
+        .then(() => res.json('Soldier updated!'))
         .catch(err => res.status(400).json('Error: ' + err));
     })
     .catch(err => res.status(400).json('Error: ' + err));
@@ -72,15 +81,10 @@ router.route('/edit/:id').post((req, res) => {
 //delete one user by id
 router.route('/delete/:id').delete((req, res) => {
   console.log('deleting');
-  const id = req.params.id;
-  Soldier.findOneAndUpdate({ parent: id }, { parent: null })
-    .then(() => {
-      Soldier.findByIdAndDelete(req.params.id)
-        .then(() => res.json('User has been deleted.'))
-        .catch(err => res.status(400).json('Error: ' + err));
-    })
-    .catch(err => res.status(400).json('Error: ' + err));
 
+  Soldier.remove({ id: req.params.id })
+    .then(() => res.json('Soldier has been deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 
