@@ -16,9 +16,16 @@ router.route('/:id').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-//get one user's children
+//get all children of one user
 router.route('/:id/children').get((req, res) => {
-  Soldier.find({ path: req.params.id })
+  Soldier.findById(req.params.id)
+    .then(soldier => { res.json(soldier.getChildren()) })
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+//get direct children of one user
+router.route('/:id/dirchildren').get((req, res) => {
+  Soldier.find({ parentId: req.params.id })
     .then(soldiers => { res.json(soldiers) })
     .catch(err => res.status(400).json('Error: ' + err));
 });

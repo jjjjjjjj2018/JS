@@ -56,7 +56,7 @@ function getParentSuccess(response) {
   };
 }
 
-function getParnetFail(error) {
+function getParentFail(error) {
   return {
     type: 'GET_PARENT_FAIL',
     error,
@@ -154,7 +154,7 @@ export function getAll() {
   };
 }
 
-export function getOne() {
+export function getOne(id) {
   return (dispatch) => {
     dispatch(getOneStart());
     axios
@@ -168,7 +168,7 @@ export function getOne() {
   };
 }
 
-export function getChildren() {
+export function getChildren(id) {
   return (dispatch) => {
     dispatch(getChildrenStart());
     axios
@@ -181,8 +181,23 @@ export function getChildren() {
       });
   };
 }
+export function getDirectChildren(id) {
+  return (dispatch) => {
+    dispatch(getDirectChildrenStart());
+    axios
+      .get(`http://localhost:8080/soldiers/${id}/dirchildren`)
+      .then(response => {
+        dispatch(getDirectChildrenSuccess(response));
+      })
+      .catch(err => {
+        dispatch(getDirectChildrenFail(err));
+      });
+  };
+}
 
-export function getParent() {
+
+
+export function getParent(id) {
   return (dispatch) => {
     dispatch(getParentStart());
     axios

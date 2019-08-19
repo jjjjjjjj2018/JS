@@ -8,7 +8,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TextField from '@material-ui/core/TextField';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
@@ -59,10 +58,16 @@ function deleteOne(list, id) {
 }
 
 const headRows = [
-    { id: 'firstName', numeric: false, label: 'First Name' },
-    { id: 'lastName', numeric: false, label: 'Last Name' },
-    { id: 'gender', numeric: false, label: 'Sex' },
-    { id: 'age', numeric: true, label: 'Age' },
+    
+   // { id: 'img', numeric: false, label: 'Avatar' },
+    { id: 'name', numeric: false, label: 'Name' },
+    { id: 'sex', numeric: false, label: 'Sex' },
+    { id: 'superior', numeric: false, label: 'Superior' },
+    // { id: 'rank', numeric: false, label: 'Rank' },
+    // { id: 'startDate', numeric: true, label: 'Start Date' },
+    // { id: 'phone', numeric: false, label: 'Phone' },
+    // { id: 'email', numeric: false, label: 'Email' },
+    // { id: 'numOfChildren', numeric: false, label: '# of D.S.' }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -169,20 +174,6 @@ class App extends React.Component {
         this.handleSearch = this.handleSearch.bind(this);
     }
 
-    handleRequestSort = (event, property) => {
-        const isDesc = this.state.orderBy === property && this.state.order === 'desc';
-        this.setState({ order: isDesc ? 'asc' : 'desc' });
-        this.setState({ orderBy: property });
-    }
-
-    handleChangePage = (event, newPage) => {
-        this.setState({ page: newPage });
-    }
-
-    handleChangeRowsPerPage = event => {
-        this.setState({ rowsPerPage: (+event.target.value) });
-        this.setState({ page: 0 });
-    }
     handleSearch(event) {
         this.setState({ item: event.target.value });
     }
@@ -247,12 +238,13 @@ class App extends React.Component {
                                                                 {/* <TableCell align="left">{row.img}</TableCell> */}
                                                                 <TableCell align="left">{row.name}</TableCell>
                                                                 <TableCell align="left">{row.sex}</TableCell>
-                                                                <TableCell align="left">{row.rank}</TableCell>
+                                                                 <TableCell align="left">{row.superior}</TableCell>
+                                                                {/* <TableCell align="left">{row.rank}</TableCell>
                                                                 <TableCell align="left">{row.startDate}</TableCell>
                                                                 <TableCell align="left">{row.phone}</TableCell>
                                                                 <TableCell align="left">{row.email}</TableCell>
-                                                                <TableCell align="left">{row.superior}</TableCell>
-                                                                <TableCell align="left">{row.numOfChildren}</TableCell>
+                                                               
+                                                                <TableCell align="left">{row.numOfChildren}</TableCell> */}
                                                             </TableRow>
                                                         );
                                                     })}

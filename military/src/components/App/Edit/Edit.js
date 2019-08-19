@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
 import { connect } from "react-redux";
-import { editUser } from "../../../redux/action-creators";
+import { editSoldier } from "../../../redux/action-creators";
 import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
@@ -150,14 +150,14 @@ class Edit extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        userList: state.userList
+        soldierList: state.soldierList
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        editUser: (id, user) => {
-            dispatch(editUser(id, user));
+        editSoldier: (id, soldier) => {
+            dispatch(editSoldier(id, soldier));
         }
     };
 };

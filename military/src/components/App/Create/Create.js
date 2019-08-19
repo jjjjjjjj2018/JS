@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
 import { connect } from "react-redux";
-import { createUser } from "../../../redux/action-creators";
+import { createSoldier } from "../../../redux/action-creators";
 import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
@@ -126,8 +126,8 @@ class Create extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createUser: (user) => {
-            dispatch(createUser(user));
+        createSoldier: (soldier) => {
+            dispatch(createSoldier(soldier));
         }
     };
 };
