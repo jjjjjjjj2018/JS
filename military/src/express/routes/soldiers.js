@@ -18,22 +18,21 @@ router.route('/:id').get((req, res) => {
 
 //get one user's children
 router.route('/:id/children').get((req, res) => {
-  Soldier.findById(req.params.id)
-    .getChildren(children => res.json(children))
+  Soldier.find({ path: req.params.id })
+    .then(soldiers => { res.json(soldiers) })
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
 //get one user's parent
 router.route('/:id/parent').get((req, res) => {
   Soldier.findById(req.params.id)
-    .populate('parent')
-    .then(soldier => res.json(soldier.parent))
+    .populate('parentId')
+    .then(soldier => res.json(soldier.parentId))
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
 //create new user
 router.route('/create').post((req, res) => {
-  console.log('creating');
   const { /*img,*/ name, sex, parent/*, startDate, phone, rank, email*/ } = req.body;
   const newSoldier = new Soldier({
     // img,
@@ -45,7 +44,6 @@ router.route('/create').post((req, res) => {
     email*/
   });
   //newSoldier.parent = Soldier.findById(parent);
-  console.log(parent);
   if (!parent)
     newSoldier.save()
       .then(() => res.json('Soldier has been created.'))
@@ -53,11 +51,13 @@ router.route('/create').post((req, res) => {
 
   if (parent) {
     Soldier.findById(parent)
-      .save(soldier => { soldier.appendChild(newSoldier) })
+      .then(soldier => {
+        soldier.appendChild(newSoldier);
+      })
       .then(() => res.json('Soldier has been created.'))
       .catch(err => res.status(400).json('Error: ' + err));
   }
-
+  console.log(parent);
 });
 
 //edit one user by id
@@ -66,6 +66,7 @@ router.route('/edit/:id').post((req, res) => {
     .then(soldier => {
       soldier.name = req.body.name;
       soldier.sex = req.body.sex;
+      soldier.parentId = req.body.parent;
       /*soldier.startDate = req.body.startDate;
       soldier.phone = req.body.phone;
       soldier.rank = req.body.rank;
@@ -82,10 +83,9 @@ router.route('/edit/:id').post((req, res) => {
 router.route('/delete/:id').delete((req, res) => {
   console.log('deleting');
 
-  Soldier.remove({ id: req.params.id })
+  Soldier.findById(req.params.id).remove()
     .then(() => res.json('Soldier has been deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 });
-
 
 module.exports = router;

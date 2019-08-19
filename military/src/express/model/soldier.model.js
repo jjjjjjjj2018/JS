@@ -15,7 +15,7 @@ const soldierSchema = new Schema({
     parent: { type: Schema.Types.ObjectId, ref: 'Soldier' }
 }, { timestamps: true });
 
-soldierSchema.plugin(tmaterializedPluginree);
+soldierSchema.plugin(materializedPlugin);
 soldierSchema.plugin(mongoosePaginate);
 
 const Soldier = mongoose.model('Soldier', soldierSchema);
