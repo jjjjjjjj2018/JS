@@ -3,7 +3,7 @@ const initState = {
     list: [],
     error: null
 };
-const userList = (state = initState, action) => {
+const soldierList = (state = initState, action) => {
     switch (action.type) {
         case "GET_ALL_START":
             return {
@@ -18,6 +18,60 @@ const userList = (state = initState, action) => {
                 error: null
             };
         case "GET_ALL_FAIL":
+            return {
+                ...state,
+                isLoading: false,
+                error: action.err
+            };
+        case "GET_ONE_START":
+            return {
+                ...state,
+                isLoading: true
+            };
+        case "GET_ONE_SUCCESS":
+            return {
+                ...state,
+                isLoading: false,
+                list: action.data,
+                error: null
+            };
+        case "GET_ONE_FAIL":
+            return {
+                ...state,
+                isLoading: false,
+                error: action.err
+            };
+        case "GET_PARENT_START":
+            return {
+                ...state,
+                isLoading: true
+            };
+        case "GET_PARENT_SUCCESS":
+            return {
+                ...state,
+                isLoading: false,
+                list: action.data,
+                error: null
+            };
+        case "GET_PARENT_FAIL":
+            return {
+                ...state,
+                isLoading: false,
+                error: action.err
+            };
+        case "GET_CHILDREN_START":
+            return {
+                ...state,
+                isLoading: true
+            };
+        case "GET_CHILDREN_SUCCESS":
+            return {
+                ...state,
+                isLoading: false,
+                list: action.data,
+                error: null
+            };
+        case "GET_CHILDREN_FAIL":
             return {
                 ...state,
                 isLoading: false,
@@ -79,4 +133,4 @@ const userList = (state = initState, action) => {
     }
 };
 
-export default userList;
+export default soldierList;

@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getAll, deleteUser } from "../../redux/action-creators";
+import { getAll, deleteSoldier } from "../../redux/action-creators";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
@@ -141,7 +141,7 @@ const styles = makeStyles(theme => ({
 const toCreate = props => <AddIcon onClick={() => { props.history.push('/create') }} />;
 
 const toEdit = props => <EditIcon onClick={() => {
-    props.history.push({ pathname: '/edit', state: { user: props.user } });
+    props.history.push({ pathname: '/edit', state: { soldier: props.soldier } });
 }} />;
 
 
@@ -151,7 +151,7 @@ const WithCreateButton = withRouter(toCreate);
 
 class App extends React.Component {
     componentDidMount() {
-        this.props.getAllUsers();
+        this.props.getAllSoldiers();
     }
 
     constructor(props) {
@@ -187,14 +187,8 @@ class App extends React.Component {
         this.setState({ item: event.target.value });
     }
     handleDelete = (id) => {
-        this.props.deleteUser(id);
-        this.props.userList.list = deleteOne(this.props.userList.list, id);
-        if (this.props.userList.list.length % this.state.rowsPerPage === 0) {
-            let page = this.state.page;
-            page -= 1;
-            console.log(page);
-            this.setState({ page: page });
-        }
+        this.props.deleteSoldier(id);
+        this.props.soldierList.list = deleteOne(this.props.soldierList.list, id);
     }
 
     render() {
@@ -203,7 +197,7 @@ class App extends React.Component {
                 item,
             },
             props: {
-                userList: { list, isLoading, error }, classes,
+                soldierList: { list, isLoading, error }, classes,
             }
         } = this;
 
@@ -215,7 +209,7 @@ class App extends React.Component {
                         {list.length > 0 &&
                             <Paper className={classes.paper}>
                                 <Typography variant="h4" id="tableTitle">
-                                    Users
+                                    US Amary Personal Registry
                                     </Typography>
                                 <br />
                                 <TextField right='10' type='text' value={item} onChange={this.handleSearch} placeholder='search' />
@@ -230,48 +224,43 @@ class App extends React.Component {
                                             orderBy={this.state.orderBy}
                                             onRequestSort={this.handleRequestSort}
                                         />
-                                        <TableBody>
-                                            {stableSort(list, getSorting(this.state.order, this.state.orderBy))
-                                                .filter(searchingFor(item))
-                                                .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-                                                .map(row => {
-                                                    return (
-                                                        <TableRow key={row._id} hover tabIndex={-1}>
-                                                            <TableCell>
-                                                                <IconButton aria-label="edit"><WithEditButton
-                                                                    user={row}
-                                                                /></IconButton>
+                                        {/* <InfiniteScroll
+                                            dataLength={list.length}
+                                            next={this.fetchSoldiers}
+                                            hasMore={true}
+                                            loader={<h4>Loading...</h4>}
+                                        > */}
+                                            <TableBody>
+                                                {stableSort(list, getSorting(this.state.order, this.state.orderBy))
+                                                    .map(row => {
+                                                        return (
+                                                            <TableRow key={row._id} hover tabIndex={-1}>
+                                                                <TableCell>
+                                                                    <IconButton aria-label="edit"><WithEditButton
+                                                                        soldier={row}
+                                                                    /></IconButton>
 
-                                                            </TableCell>
-                                                            <TableCell><IconButton aria-label="delete"
-                                                                onClick={() => this.handleDelete(row._id)}>
-                                                                <DeleteIcon /></IconButton></TableCell>
-                                                            <TableCell align="left">{row.firstName}</TableCell>
-                                                            <TableCell align="left">{row.lastName}</TableCell>
-                                                            <TableCell align="left">{row.gender}</TableCell>
-                                                            <TableCell align="left">{row.age}</TableCell>
-                                                        </TableRow>
-                                                    );
-                                                })}
+                                                                </TableCell>
+                                                                <TableCell><IconButton aria-label="delete"
+                                                                    onClick={() => this.handleDelete(row._id)}>
+                                                                    <DeleteIcon /></IconButton></TableCell>
+                                                                {/* <TableCell align="left">{row.img}</TableCell> */}
+                                                                <TableCell align="left">{row.name}</TableCell>
+                                                                <TableCell align="left">{row.sex}</TableCell>
+                                                                <TableCell align="left">{row.rank}</TableCell>
+                                                                <TableCell align="left">{row.startDate}</TableCell>
+                                                                <TableCell align="left">{row.phone}</TableCell>
+                                                                <TableCell align="left">{row.email}</TableCell>
+                                                                <TableCell align="left">{row.superior}</TableCell>
+                                                                <TableCell align="left">{row.numOfChildren}</TableCell>
+                                                            </TableRow>
+                                                        );
+                                                    })}
 
-                                        </TableBody>
+                                            </TableBody>
+                                        {/* </InfiniteScroll> */}
                                     </Table>
                                 </div>
-                                <TablePagination
-                                    rowsPerPageOptions={[5, 10, 25]}
-                                    component="div"
-                                    count={list.length}
-                                    rowsPerPage={this.state.rowsPerPage}
-                                    page={this.state.page}
-                                    backIconButtonProps={{
-                                        'aria-label': 'previous page',
-                                    }}
-                                    nextIconButtonProps={{
-                                        'aria-label': 'next page',
-                                    }}
-                                    onChangePage={this.handleChangePage}
-                                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                                />
                             </Paper>
                         }
                     </div>
@@ -282,17 +271,17 @@ class App extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        userList: state.userList
+        soldierList: state.soldierList
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getAllUsers: () => {
+        getAllSoldiers: () => {
             dispatch(getAll());
         },
-        deleteUser: (id) => {
-            dispatch(deleteUser(id));
+        deleteSoldier: (id) => {
+            dispatch(deleteSoldier(id));
         }
     };
 };

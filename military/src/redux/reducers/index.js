@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import userList from "./userList";
+import soldierList from "./soldierList";
 
 const reducer = combineReducers({
-  userList
+  soldierList
 });
 
 export default reducer;

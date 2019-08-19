@@ -21,6 +21,69 @@ function getAllFail(error) {
   };
 }
 
+//get one soldier action
+function getOneStart() {
+  return {
+    type: 'GET_ONE_START',
+  };
+}
+
+function getOneSuccess(response) {
+  return {
+    type: 'GET_ONE_SUCCESS',
+    data: response.data,
+  };
+}
+
+function getOneFail(error) {
+  return {
+    type: 'GET_ONE_FAIL',
+    error,
+  };
+}
+
+//get parent of a soldider
+function getParentStart() {
+  return {
+    type: 'GET_PARENT_START',
+  };
+}
+
+function getParentSuccess(response) {
+  return {
+    type: 'GET_PARENT_SUCCESS',
+    data: response.data,
+  };
+}
+
+function getParnetFail(error) {
+  return {
+    type: 'GET_PARENT_FAIL',
+    error,
+  };
+}
+
+//get one soldier's children
+function getChildrenStart() {
+  return {
+    type: 'GET_CHILDREN_START',
+  };
+}
+
+function getChildrenSuccess(response) {
+  return {
+    type: 'GET_CHILDREN_SUCCESS',
+    data: response.data,
+  };
+}
+
+function getChildrenFail(error) {
+  return {
+    type: 'GET_CHILDREN_FAIL',
+    error,
+  };
+}
+
 //delete one user action
 function deleteOneStart() {
   return {
@@ -133,7 +196,7 @@ export function getParent() {
   };
 }
 
-export function deleteUser(id) {
+export function deleteSoldier(id) {
   return (dispatch) => {
     dispatch(deleteOneStart());
     axios
@@ -145,11 +208,11 @@ export function deleteUser(id) {
   };
 }
 
-export function createUser(user) {
+export function createSoldier(soldier) {
   return (dispatch) => {
     dispatch(createOneStart());
     axios
-      .post('http://localhost:8080/soliers/create',user)
+      .post('http://localhost:8080/soliers/create',soldier)
       .then(dispatch(createOneSuccess()))
       .catch(err => {
         dispatch(createOneFail(err));
@@ -157,11 +220,11 @@ export function createUser(user) {
   };
 }
 
-export function editUser(id,user) {
+export function editSoldier(id,soldier) {
   return (dispatch) => {
     dispatch(editOneStart());
     axios
-      .post(`http://localhost:8080/soldiers/edit/${id}`,user)
+      .post(`http://localhost:8080/soldiers/edit/${id}`,soldier)
       .then(
         dispatch(editOneSuccess()))
       .catch(err => {
