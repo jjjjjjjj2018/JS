@@ -189,6 +189,12 @@ class App extends React.Component {
     handleDelete = (id) => {
         this.props.deleteUser(id);
         this.props.userList.list = deleteOne(this.props.userList.list, id);
+        if (this.props.userList.list.length % this.state.rowsPerPage === 0) {
+            let page = this.state.page;
+            page -= 1;
+            console.log(page);
+            this.setState({ page: page });
+        }
     }
 
     render() {

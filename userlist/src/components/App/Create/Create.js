@@ -6,8 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 
-
-
 const create = props => {
     const { firstName, lastName, gender, age, password, repeatPassword } = props.user;
     return (
@@ -24,7 +22,6 @@ const cancel = props => {
         <Button variant="contained"  onClick={() => { props.history.push('/') }} > Cancel</Button>
     );
 };
-
 
 const WithHomeButton = withRouter(create);
 const WithCancelButton = withRouter(cancel);
