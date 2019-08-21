@@ -2,9 +2,9 @@ const express = require('express');
 let Soldier = require('../model/soldier.model');
 const router = express.Router();
 
-//get all users
+//get all userss
 router.route('/').get((req, res) => {
-  Soldier.find()
+  Soldier.find().populate('parentId', 'name')
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -19,7 +19,10 @@ router.route('/:id').get((req, res) => {
 //get all children of one user
 router.route('/:id/children').get((req, res) => {
   Soldier.findById(req.params.id)
-    .then(soldier => { res.json(soldier.getChildren()) })
+    .then(soldier => {
+      soldier.getChildren(res)
+        .then(res.json(res))
+    })
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
@@ -64,7 +67,6 @@ router.route('/create').post((req, res) => {
       .then(() => res.json('Soldier has been created.'))
       .catch(err => res.status(400).json('Error: ' + err));
   }
-  console.log(parent);
 });
 
 //edit one user by id
@@ -89,8 +91,8 @@ router.route('/edit/:id').post((req, res) => {
 //delete one user by id
 router.route('/delete/:id').delete((req, res) => {
   console.log('deleting');
-
-  Soldier.findById(req.params.id).remove()
+  Soldier.findById(req.params.id)
+    .remove()
     .then(() => res.json('Soldier has been deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 });

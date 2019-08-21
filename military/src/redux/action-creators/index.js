@@ -181,6 +181,8 @@ export function getChildren(id) {
       });
   };
 }
+
+/*
 export function getDirectChildren(id) {
   return (dispatch) => {
     dispatch(getDirectChildrenStart());
@@ -194,6 +196,7 @@ export function getDirectChildren(id) {
       });
   };
 }
+*/
 
 
 

@@ -58,8 +58,8 @@ function deleteOne(list, id) {
 }
 
 const headRows = [
-    
-   // { id: 'img', numeric: false, label: 'Avatar' },
+
+    // { id: 'img', numeric: false, label: 'Avatar' },
     { id: 'name', numeric: false, label: 'Name' },
     { id: 'sex', numeric: false, label: 'Sex' },
     { id: 'superior', numeric: false, label: 'Superior' },
@@ -221,35 +221,35 @@ class App extends React.Component {
                                             hasMore={true}
                                             loader={<h4>Loading...</h4>}
                                         > */}
-                                            <TableBody>
-                                                {stableSort(list, getSorting(this.state.order, this.state.orderBy))
-                                                    .map(row => {
-                                                        return (
-                                                            <TableRow key={row._id} hover tabIndex={-1}>
-                                                                <TableCell>
-                                                                    <IconButton aria-label="edit"><WithEditButton
-                                                                        soldier={row}
-                                                                    /></IconButton>
+                                        <TableBody>
+                                            {stableSort(list, getSorting(this.state.order, this.state.orderBy))
+                                                .map(row => {
+                                                    return (
+                                                        <TableRow key={row._id} hover tabIndex={-1}>
+                                                            <TableCell>
+                                                                <IconButton aria-label="edit"><WithEditButton
+                                                                    soldier={row}
+                                                                /></IconButton>
 
-                                                                </TableCell>
-                                                                <TableCell><IconButton aria-label="delete"
-                                                                    onClick={() => this.handleDelete(row._id)}>
-                                                                    <DeleteIcon /></IconButton></TableCell>
-                                                                {/* <TableCell align="left">{row.img}</TableCell> */}
-                                                                <TableCell align="left">{row.name}</TableCell>
-                                                                <TableCell align="left">{row.sex}</TableCell>
-                                                                 <TableCell align="left">{row.superior}</TableCell>
-                                                                {/* <TableCell align="left">{row.rank}</TableCell>
+                                                            </TableCell>
+                                                            <TableCell><IconButton aria-label="delete"
+                                                                onClick={() => this.handleDelete(row._id)}>
+                                                                <DeleteIcon /></IconButton></TableCell>
+                                                            {/* <TableCell align="left">{row.img}</TableCell> */}
+                                                            <TableCell align="left">{row.name}</TableCell>
+                                                            <TableCell align="left">{row.sex}</TableCell>
+                                                            <TableCell align="left">{row.parentId.name}</TableCell>
+                                                            {/* <TableCell align="left">{row.rank}</TableCell>
                                                                 <TableCell align="left">{row.startDate}</TableCell>
                                                                 <TableCell align="left">{row.phone}</TableCell>
                                                                 <TableCell align="left">{row.email}</TableCell>
                                                                
                                                                 <TableCell align="left">{row.numOfChildren}</TableCell> */}
-                                                            </TableRow>
-                                                        );
-                                                    })}
+                                                        </TableRow>
+                                                    );
+                                                })}
 
-                                            </TableBody>
+                                        </TableBody>
                                         {/* </InfiniteScroll> */}
                                     </Table>
                                 </div>
