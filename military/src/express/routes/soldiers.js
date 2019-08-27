@@ -20,8 +20,8 @@ router.route('/:id').get((req, res) => {
 router.route('/:id/children').get((req, res) => {
   Soldier.findById(req.params.id)
     .then(soldier => {
-      soldier.getChildren(res)
-        .then(res.json(res))
+      soldier.getChildren()
+        .then(children => res.json(children))
     })
     .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -91,8 +91,7 @@ router.route('/edit/:id').post((req, res) => {
 //delete one user by id
 router.route('/delete/:id').delete((req, res) => {
   console.log('deleting');
-  Soldier.findById(req.params.id)
-    .remove()
+  Soldier.Remove({ _id: req.params.id })
     .then(() => res.json('Soldier has been deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 });

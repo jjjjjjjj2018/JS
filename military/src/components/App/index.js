@@ -238,7 +238,9 @@ class App extends React.Component {
                                                             {/* <TableCell align="left">{row.img}</TableCell> */}
                                                             <TableCell align="left">{row.name}</TableCell>
                                                             <TableCell align="left">{row.sex}</TableCell>
-                                                            <TableCell align="left">{row.parentId.name}</TableCell>
+                                                            {row.parentId.name &&
+                                                                <TableCell align="left">{row.parentId.name}</TableCell>
+                                                            }
                                                             {/* <TableCell align="left">{row.rank}</TableCell>
                                                                 <TableCell align="left">{row.startDate}</TableCell>
                                                                 <TableCell align="left">{row.phone}</TableCell>
