@@ -33,14 +33,6 @@ router.route('/:id/dirchildren').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-//get one user's parent
-router.route('/:id/parent').get((req, res) => {
-  Soldier.findById(req.params.id)
-    .populate('parentId')
-    .then(soldier => res.json(soldier.parentId))
-    .catch(err => res.status(400).json('Error: ' + err));
-});
-
 //create new user
 router.route('/create').post((req, res) => {
   const { /*img,*/ name, sex, parent/*, startDate, phone, rank, email*/ } = req.body;

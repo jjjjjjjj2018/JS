@@ -42,27 +42,6 @@ function getOneFail(error) {
   };
 }
 
-//get parent of a soldider
-function getParentStart() {
-  return {
-    type: 'GET_PARENT_START',
-  };
-}
-
-function getParentSuccess(response) {
-  return {
-    type: 'GET_PARENT_SUCCESS',
-    data: response.data,
-  };
-}
-
-function getParentFail(error) {
-  return {
-    type: 'GET_PARENT_FAIL',
-    error,
-  };
-}
-
 //get one soldier's children
 function getChildrenStart() {
   return {
@@ -80,6 +59,27 @@ function getChildrenSuccess(response) {
 function getChildrenFail(error) {
   return {
     type: 'GET_CHILDREN_FAIL',
+    error,
+  };
+}
+
+//get one soldier's direct children
+function getDirectChildrenStart() {
+  return {
+    type: 'GET_DIRECT_CHILDREN_START',
+  };
+}
+
+function getDirectChildrenSuccess(response) {
+  return {
+    type: 'GET_DIRECT_CHILDREN_SUCCESS',
+    data: response.data,
+  };
+}
+
+function getDirectChildrenFail(error) {
+  return {
+    type: 'GET_DIRECT_CHILDREN_FAIL',
     error,
   };
 }
@@ -182,7 +182,6 @@ export function getChildren(id) {
   };
 }
 
-/*
 export function getDirectChildren(id) {
   return (dispatch) => {
     dispatch(getDirectChildrenStart());
@@ -193,23 +192,6 @@ export function getDirectChildren(id) {
       })
       .catch(err => {
         dispatch(getDirectChildrenFail(err));
-      });
-  };
-}
-*/
-
-
-
-export function getParent(id) {
-  return (dispatch) => {
-    dispatch(getParentStart());
-    axios
-      .get(`http://localhost:8080/soldiers/${id}/parent`)
-      .then(response => {
-        dispatch(getParentSuccess(response));
-      })
-      .catch(err => {
-        dispatch(getParentFail(err));
       });
   };
 }

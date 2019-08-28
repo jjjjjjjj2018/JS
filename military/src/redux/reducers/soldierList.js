@@ -41,24 +41,6 @@ const soldierList = (state = initState, action) => {
                 isLoading: false,
                 error: action.err
             };
-        case "GET_PARENT_START":
-            return {
-                ...state,
-                isLoading: true
-            };
-        case "GET_PARENT_SUCCESS":
-            return {
-                ...state,
-                isLoading: false,
-                list: action.data,
-                error: null
-            };
-        case "GET_PARENT_FAIL":
-            return {
-                ...state,
-                isLoading: false,
-                error: action.err
-            };
         case "GET_CHILDREN_START":
             return {
                 ...state,
@@ -72,6 +54,24 @@ const soldierList = (state = initState, action) => {
                 error: null
             };
         case "GET_CHILDREN_FAIL":
+            return {
+                ...state,
+                isLoading: false,
+                error: action.err
+            };
+        case "GET_DIRECT_CHILDREN_START":
+            return {
+                ...state,
+                isLoading: true
+            };
+        case "GET_DIRECT_CHILDREN_SUCCESS":
+            return {
+                ...state,
+                isLoading: false,
+                list: action.data,
+                error: null
+            };
+        case "GET_DIRECT_CHILDREN_FAIL":
             return {
                 ...state,
                 isLoading: false,

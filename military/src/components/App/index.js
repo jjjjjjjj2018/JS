@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getAll, deleteSoldier } from "../../redux/action-creators";
+import { getAll, deleteSoldier, getOne, getDirectChildren } from "../../redux/action-creators";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
@@ -18,6 +18,7 @@ import { lighten, makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -181,9 +182,18 @@ class App extends React.Component {
         this.props.deleteSoldier(id);
         this.props.soldierList.list = deleteOne(this.props.soldierList.list, id);
     }
-
+    showParent = (parentId) => {
+        this.props.getOneSoldier(parentId._id);
+        const { props: { soldierList: { list } } } = this;
+        this.props.soldierList.list = list;
+        console.log(list);
+        // this.props.soldierList.list = 
+    }
+    showChildren = (id) => {
+        this.props.getChildren(id);
+    }
     render() {
-        const {
+        let {
             state: {
                 item,
             },
@@ -196,7 +206,7 @@ class App extends React.Component {
             <div className={classes.root}>
                 {isLoading && <div>Loading ...</div>}
                 {!isLoading &&
-                    <div> {error && <div style={{ color: "red" }}>Oops... Something went wrong!</div>}
+                    <div> {error && <div style={{ color: "red" }}>Oops...</div>}
                         {list.length > 0 &&
                             <Paper className={classes.paper}>
                                 <Typography variant="h4" id="tableTitle">
@@ -204,7 +214,8 @@ class App extends React.Component {
                                     </Typography>
                                 <br />
                                 <TextField right='10' type='text' value={item} onChange={this.handleSearch} placeholder='search' />
-                                <IconButton><WithCreateButton /></IconButton>
+                                <IconButton onClick={() => this.componentDidMount()}><RefreshIcon /></IconButton>
+                                <IconButton align='right'><WithCreateButton /></IconButton>
                                 <div className={classes.tableWrapper}>
                                     <Table
                                         className={classes.table}
@@ -238,8 +249,13 @@ class App extends React.Component {
                                                             {/* <TableCell align="left">{row.img}</TableCell> */}
                                                             <TableCell align="left">{row.name}</TableCell>
                                                             <TableCell align="left">{row.sex}</TableCell>
-                                                            {row.parentId.name &&
-                                                                <TableCell align="left">{row.parentId.name}</TableCell>
+                                                            {row.parentId &&
+                                                                <TableCell align="left" onClick={() =>
+                                                                    list = this.props.getOneSoldier(row.parentId._id)}>
+                                                                    {row.parentId.name}</TableCell>
+                                                            }
+                                                            {
+
                                                             }
                                                             {/* <TableCell align="left">{row.rank}</TableCell>
                                                                 <TableCell align="left">{row.startDate}</TableCell>
@@ -276,6 +292,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         deleteSoldier: (id) => {
             dispatch(deleteSoldier(id));
+        },
+        getOneSoldier: (id) => {
+            dispatch(getOne(id));
+        },
+        getChildren: (id) => {
+            dispatch(getDirectChildren(id))
         }
     };
 };
