@@ -5,14 +5,14 @@ const mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 const soldierSchema = new Schema({
-    // img: { type: String },
-    name: { type: String },
-    sex: { type: String },
-    /* startDate: { type: String },
-     phone: { type: Number },
-     rank: { type: String },
-     email: { type: String }*/
-    parent: { type: Schema.Types.ObjectId, ref: 'Soldier' }
+    avatar: { type: String },
+    name: { type: String, text: true },
+    sex: { type: String, text: true },
+    email: { type: String , text: true},
+    rank: { type: String , text: true},
+    startDate: { type: String , text: true}
+
+
 }, { timestamps: true });
 
 soldierSchema.plugin(materializedPlugin);

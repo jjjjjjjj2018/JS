@@ -5,6 +5,7 @@ import { editSoldier, getOne } from "../../../redux/action-creators";
 import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
+import ImageUploader from 'react-images-upload';
 
 
 const edit = props => {
@@ -41,9 +42,12 @@ class Edit extends React.Component {
                 id: '',
                 name: '',
                 sex: '',
-                parent: ''
+                parent: '',
+                avatar: ''
             }
+
         }
+        this.onDrop = this.onDrop.bind(this);
     }
     handleChange = (event) => {
         const { soldier } = this.state;
@@ -51,50 +55,70 @@ class Edit extends React.Component {
         this.setState({ soldier });
     }
 
+    onDrop(picture) {
+        const { soldier } = this.state;
+        soldier.avatar = picture[0].name;
+        this.setState({ soldier });
+        console.log(this.state.soldier.avatar);
+    }
+
     render() {
         const { props: { soldierList: { soldier } } } = this;
         return (
             <div align='center'>
                 <h2>Edit Soldier</h2>
-
-                <form >
-                    <TextField
-                        required
-                        id="name"
-                        label="Name"
-                        defaultValue={soldier.name}
-                        margin="normal"
-                        onChange={this.handleChange}
+                <div>
+                    {this.state.soldier.avatar &&
+                        <img width='200' height='200' src={process.env.PUBLIC_URL + this.state.soldier.avatar} />
+                    }
+                    <ImageUploader
+                        withIcon={true}
+                        buttonText='Choose an image'
+                        onChange={this.onDrop}
+                        imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                        maxFileSize={5242880}
                     />
-                    <br />
-                    <TextField
-                        required
-                        id="sex"
-                        label="Sex"
-                        defaultValue={soldier.sex}
-                        margin="normal"
-                        onChange={this.handleChange}
-                    />
-                    <br />
-                    <TextField
-                        required
-                        id="parent"
-                        label="Parent"
-                        defaultValue={(soldier.parentId)
-                        }
-                        margin="normal"
-                        onChange={this.handleChange}
-                    />
-                </form> <br />
-                <div onClick={() => {
-                    let newSoldier = soldier;
-                    const id = soldier._id;
-                    delete newSoldier._id;
-                    this.props.editSoldier(id, soldier);
-                }}>
-                    <WithHomeButton soldier={soldier} />
-                </div><br />
-                <WithCancelButton />
+                    <div>
+                        <form >
+                            <TextField
+                                required
+                                id="name"
+                                label="Name"
+                                defaultValue={soldier.name}
+                                margin="normal"
+                                onChange={this.handleChange}
+                            />
+                            <br />
+                            <TextField
+                                required
+                                id="sex"
+                                label="Sex"
+                                defaultValue={soldier.sex}
+                                margin="normal"
+                                onChange={this.handleChange}
+                            />
+                            <br />
+                            <TextField
+                                required
+                                id="parent"
+                                label="Parent"
+                                defaultValue={(soldier.parentId)
+                                }
+                                margin="normal"
+                                onChange={this.handleChange}
+                            />
+                        </form> <br />
+                        <div onClick={() => {
+                            let newSoldier = soldier;
+                            const id = soldier._id;
+                            delete newSoldier._id;
+                            this.props.editSoldier(id, soldier);
+                        }}>
+                            <WithHomeButton soldier={soldier} />
+                        </div><br />
+                        <WithCancelButton />
+                    </div>
+                </div>
             </div>
         );
     }

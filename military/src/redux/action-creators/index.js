@@ -6,20 +6,57 @@ function getAllStart() {
     type: 'GET_ALL_START',
   };
 }
-
 function getAllSuccess(response) {
   return {
     type: 'GET_ALL_SUCCESS',
     data: response.data,
   };
 }
-
 function getAllFail(error) {
   return {
     type: 'GET_ALL_FAIL',
     error,
   };
 }
+
+//sort all soldiers
+function sortAllStart() {
+  return {
+    type: 'SORT_ALL_START',
+  };
+}
+function sortAllSuccess(response) {
+  return {
+    type: 'SORT_ALL_SUCCESS',
+    data: response.data,
+  };
+}
+function sortAllFail(error) {
+  return {
+    type: 'SORT_ALL_FAIL',
+    error,
+  };
+}
+
+//search term in all soldiers
+function searchAllStart() {
+  return {
+    type: 'SEARCH_ALL_START',
+  };
+}
+function searchAllSuccess(response) {
+  return {
+    type: 'SEARCH_ALL_SUCCESS',
+    data: response.data,
+  };
+}
+function searchAllFail(error) {
+  return {
+    type: 'SEARCH_ALL_FAIL',
+    error,
+  };
+}
+
 
 //get one soldier action
 function getOneStart() {
@@ -154,12 +191,28 @@ export function getAll() {
   };
 }
 
+
+export function searchAll(search) {
+  return (dispatch) => {
+    dispatch(searchAllStart());
+    axios
+      .get(`http://localhost:8080/soldiers/search/${search}`)
+      .then(response => {
+        dispatch(searchAllSuccess(response));
+      })
+      .catch(err => {
+        dispatch(searchAllFail(err));
+      });
+  };
+}
+
 export function sortAll(order, orderBy) {
   return (dispatch) => {
+    let sort = '';
     dispatch(sortAllStart());
     sort = orderBy + order;
     axios
-      .get(`http://localhost:8080/soldiers/${sort}`)
+      .get(`http://localhost:8080/soldiers/sort/${sort}`)
       .then(response => {
         dispatch(sortAllSuccess(response));
       })

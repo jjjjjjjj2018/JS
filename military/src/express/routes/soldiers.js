@@ -8,7 +8,19 @@ router.route('/').get((req, res) => {
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
-router.route('/:sort').get((req, res) => {
+
+
+//backend search
+router.route('/search/:search').get((req, res) => {
+  console.log(req.params.search);
+  Soldier.find().populate('parentId', 'name').find({ $text: { $search: `${req.params.search}` } })
+    .then(soldiers => res.json(soldiers))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+
+//backend sort 
+router.route('/sort/:sort').get((req, res) => {
   let sort = {};
   if (req.params.sort === 'nameasc') {
     sort = { name: 1 };
@@ -23,8 +35,7 @@ router.route('/:sort').get((req, res) => {
   } else if (req.params.sort === 'parentdesc') {
     sort = { parentId: -1 };
   }
-
-  Soldier.find().sort(sort)
+  Soldier.find().populate('parentId', 'name').sort(sort)
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });

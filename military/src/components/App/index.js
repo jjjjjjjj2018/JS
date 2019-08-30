@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getAll, deleteSoldier, getOne, getDirectChildren } from "../../redux/action-creators";
+import { getAll, deleteSoldier, getOne, getDirectChildren, sortAll, searchAll } from "../../redux/action-creators";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
@@ -66,11 +66,14 @@ function deleteOne(list, id) {
 const headRows = [
 
     // { id: 'img', numeric: false, label: 'Avatar' },
-    { id: 'name', numeric: false, label: 'Name' },
+    { id: 'name', numeric: false, label: 'Name' }, 
     { id: 'sex', numeric: false, label: 'Sex' },
-    { id: 'superior', numeric: false, label: 'Superior' },
-    // { id: 'rank', numeric: false, label: 'Rank' },
-    // { id: 'startDate', numeric: true, label: 'Start Date' },
+     { id: 'rank', numeric: true, label: 'Rank' },
+    // { id: 'phone', numeric: true, lable: 'Phone' },
+    { id: 'email', numeric: false, label: 'Email' },
+    { id: 'startDate', numeric: true, label: 'Start Date' },
+
+   
     // { id: 'phone', numeric: false, label: 'Phone' },
     // { id: 'email', numeric: false, label: 'Email' },
     // { id: 'numOfChildren', numeric: false, label: '# of D.S.' }
@@ -81,17 +84,17 @@ class EnhancedTableHead extends React.Component {
         const { order, orderBy, onRequestSort } = this.props;
         const createSortHandler = property => event => {
             onRequestSort(event, property);
-            this.props.sortAllSoldier(order,orderBy);
         };
         return (
             <TableHead>
                 <TableRow>
-                    <TableCell align='left'>Edit</TableCell>
-                    <TableCell align='left'>Delete</TableCell>
+                    <TableCell align='center'>Edit</TableCell>
+                    <TableCell align='center'>Delete</TableCell>
+                    <TableCell align='center'>Avatar</TableCell>
                     {headRows.map(row => (
                         <TableCell
                             key={row.id}
-                            align={'left'}
+                            align={'center'}
                             sortDirection={orderBy === row.id ? order : false}
                         >
                             <TableSortLabel
@@ -103,6 +106,9 @@ class EnhancedTableHead extends React.Component {
                             </TableSortLabel>
                         </TableCell>
                     ))}
+                    <TableCell align='center'>Superior</TableCell>
+                    <TableCell align='center'># of D.S.</TableCell>
+
                 </TableRow>
             </TableHead>
         );
@@ -165,7 +171,12 @@ class App extends React.Component {
     componentDidMount() {
         this.props.getAllSoldiers();
     }
-
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.order !== prevState.order || this.state.orderBy !== prevState.orderBy)
+            this.props.sortAllSoldiers(this.state.order, this.state.orderBy);
+        // if (this.state.item !== prevState.item)
+        //     this.props.searchAllSoldiers(this.state.item);
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -176,6 +187,7 @@ class App extends React.Component {
             page: 0,
             rowsPerPage: 5,
             item: '',
+            typingTimeout: 0
         }
 
         this.handleSearch = this.handleSearch.bind(this);
@@ -190,8 +202,19 @@ class App extends React.Component {
     //     this.setState({ page: newPage });
     // }
     handleSearch(event) {
-        this.setState({ item: event.target.value });
+        this.setState({
+            item: event.target.value,
+        });
+        this.searching();
     }
+
+    searching = () => {
+        setTimeout(() => {
+            console.log(this.state.item);
+            this.props.searchAllSoldiers(this.state.item);
+        }, 700);
+    }
+
     handleDelete = (id) => {
         this.props.deleteSoldier(id);
         this.props.soldierList.list = deleteOne(this.props.soldierList.list, id);
@@ -220,19 +243,17 @@ class App extends React.Component {
         } = this;
 
         return (
-            <div className={classes.root}>
+            <div className={classes.root}><Typography variant="h4" id="tableTitle">
+                US Amary Personal Registry
+                                    </Typography>
+                <br />
+                <TextField right='10' type='text' value={item} onChange={this.handleSearch} placeholder='search' />
+                <IconButton onClick={() => this.componentDidMount()}><RefreshIcon /></IconButton>
+                <IconButton><WithCreateButton /></IconButton>
                 {isLoading && <div>Loading ...</div>}
                 {!isLoading &&
                     <div> {error && <div style={{ color: "red" }}>Oops...</div>}
-
                         <Paper className={classes.paper}>
-                            <Typography variant="h4" id="tableTitle">
-                                US Amary Personal Registry
-                                    </Typography>
-                            <br />
-                            <TextField right='10' type='text' value={item} onChange={this.handleSearch} placeholder='search' />
-                            <IconButton onClick={() => this.componentDidMount()}><RefreshIcon /></IconButton>
-                            <IconButton align='right'><WithCreateButton /></IconButton>
                             <div className={classes.tableWrapper}>
                                 <Table
                                     className={classes.table}
@@ -253,20 +274,27 @@ class App extends React.Component {
                                         {list.map(row => {
                                             return (
                                                 <TableRow key={row._id} hover tabIndex={-1}>
-                                                    <TableCell>
+                                                    <TableCell align='center'>
                                                         <IconButton aria-label="edit"><WithEditButton
                                                             id={row._id}
                                                         /></IconButton>
 
                                                     </TableCell>
-                                                    <TableCell><IconButton aria-label="delete"
+                                                    <TableCell align='center'><IconButton aria-label="delete"
                                                         onClick={() => this.handleDelete(row._id)}>
                                                         <DeleteIcon /></IconButton></TableCell>
-                                                    {/* <TableCell align="left">{row.img}</TableCell> */}
-                                                    <TableCell align="left">{row.name}</TableCell>
-                                                    <TableCell align="left">{row.sex}</TableCell>
+                                                    {!row.avatar && <TableCell />}
+                                                    {row.avatar &&
+                                                        <TableCell align="center"><img width='20' height='20' src={process.env.PUBLIC_URL + row.avatar} alt='avatar' /></TableCell>
+                                                    }
+                                                    <TableCell align="center">{row.name}</TableCell>
+                                                    <TableCell align="center">{row.sex}</TableCell>
+
+                                                    <TableCell></TableCell>
+                                                    <TableCell align='center'><Button onClick={() => window.location.href = `mailto:${row.email}`}> {row._id}</Button></TableCell>
+                                                    <TableCell></TableCell>
                                                     {row.parentId &&
-                                                        <TableCell align="left" ><Button onClick={() => this.showParent(row.parentId._id)}>
+                                                        <TableCell align="center" ><Button onClick={() => this.showParent(row.parentId._id)}>
                                                             {row.parentId.name}</Button></TableCell>
                                                     }
                                                     {
@@ -314,8 +342,11 @@ const mapDispatchToProps = (dispatch) => {
         getChildren: (id) => {
             dispatch(getDirectChildren(id))
         },
-        sortAllSoldiers:(order,orderBy)=>{
-            dispatch(sortAll(order,oderBy))
+        sortAllSoldiers: (order, orderBy) => {
+            dispatch(sortAll(order, orderBy))
+        },
+        searchAllSoldiers: (search) => {
+            dispatch(searchAll(search))
         }
     };
 };

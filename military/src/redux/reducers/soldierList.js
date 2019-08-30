@@ -24,6 +24,42 @@ const soldierList = (state = initState, action) => {
                 isLoading: false,
                 error: action.err
             };
+        case "SORT_ALL_START":
+            return {
+                ...state,
+                isLoading: true
+            };
+        case "SORT_ALL_SUCCESS":
+            return {
+                ...state,
+                isLoading: false,
+                list: action.data,
+                error: null
+            };
+        case "SORT_ALL_FAIL":
+            return {
+                ...state,
+                isLoading: false,
+                error: action.err
+            };
+        case "SEARCH_ALL_START":
+            return {
+                ...state,
+                isLoading: true
+            };
+        case "SEARCH_ALL_SUCCESS":
+            return {
+                ...state,
+                isLoading: false,
+                list: action.data,
+                error: null
+            };
+        case "SEARCH_ALL_FAIL":
+            return {
+                ...state,
+                isLoading: false,
+                error: action.err
+            };
         case "GET_ONE_START":
             return {
                 ...state,
