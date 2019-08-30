@@ -7,9 +7,9 @@ import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 
 const create = props => {
-    const { firstName, lastName, gender, age, password, repeatPassword } = props.user;
+    const { name,sex} = props.soldier;
     return (
-        <Button disabled={!firstName || !lastName || !gender || !age || !password || !repeatPassword || (password !== repeatPassword)} variant="contained" color="primary" onClick={() => {
+        <Button disabled={!name||!sex} variant="contained" color="primary" onClick={() => {
             props.history.push('/');
         }}>
             <SaveIcon /> Create

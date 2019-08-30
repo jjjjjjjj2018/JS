@@ -1,6 +1,7 @@
 const initState = {
     isLoading: false,
     list: [],
+    soldier: {},
     error: null
 };
 const soldierList = (state = initState, action) => {
@@ -33,6 +34,7 @@ const soldierList = (state = initState, action) => {
                 ...state,
                 isLoading: false,
                 list: action.data,
+                soldier: action.data,
                 error: null
             };
         case "GET_ONE_FAIL":

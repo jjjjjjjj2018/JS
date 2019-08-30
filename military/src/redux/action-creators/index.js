@@ -154,6 +154,21 @@ export function getAll() {
   };
 }
 
+export function sortAll(order, orderBy) {
+  return (dispatch) => {
+    dispatch(sortAllStart());
+    sort = orderBy + order;
+    axios
+      .get(`http://localhost:8080/soldiers/${sort}`)
+      .then(response => {
+        dispatch(sortAllSuccess(response));
+      })
+      .catch(err => {
+        dispatch(getAllFail(err));
+      });
+  };
+}
+
 export function getOne(id) {
   return (dispatch) => {
     dispatch(getOneStart());
@@ -212,7 +227,7 @@ export function createSoldier(soldier) {
   return (dispatch) => {
     dispatch(createOneStart());
     axios
-      .post('http://localhost:8080/soliers/create',soldier)
+      .post('http://localhost:8080/soliers/create', soldier)
       .then(dispatch(createOneSuccess()))
       .catch(err => {
         dispatch(createOneFail(err));
@@ -220,11 +235,11 @@ export function createSoldier(soldier) {
   };
 }
 
-export function editSoldier(id,soldier) {
+export function editSoldier(id, soldier) {
   return (dispatch) => {
     dispatch(editOneStart());
     axios
-      .post(`http://localhost:8080/soldiers/edit/${id}`,soldier)
+      .post(`http://localhost:8080/soldiers/edit/${id}`, soldier)
       .then(
         dispatch(editOneSuccess()))
       .catch(err => {

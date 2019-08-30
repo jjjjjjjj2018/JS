@@ -19,36 +19,37 @@ import { withStyles } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import Button from '@material-ui/core/Button';
 
-function desc(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
+// function desc(a, b, orderBy) {
+//     if (b[orderBy] < a[orderBy]) {
+//         return -1;
+//     }
+//     if (b[orderBy] > a[orderBy]) {
+//         return 1;
+//     }
+//     return 0;
+// }
 
-function stableSort(array, cmp) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = cmp(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map(el => el[0]);
-}
+// function stableSort(array, cmp) {
+//     const stabilizedThis = array.map((el, index) => [el, index]);
+//     stabilizedThis.sort((a, b) => {
+//         const order = cmp(a[0], b[0]);
+//         if (order !== 0) return order;
+//         return a[1] - b[1];
+//     });
+//     return stabilizedThis.map(el => el[0]);
+// }
 
-function getSorting(order, orderBy) {
-    return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
-}
+// function getSorting(order, orderBy) {
+//     return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+// }
 
-function searchingFor(item) {
-    return function (x) {
-        return x.firstName.includes(item) || x.lastName.includes(item) || x.gender.includes(item) || x.age.toString().includes(item) || !item;
-    }
-}
+// function searchingFor(item) {
+//     return function (x) {
+//         return x.firstName.includes(item) || x.lastName.includes(item) || x.gender.includes(item) || x.age.toString().includes(item) || !item;
+//     }
+// }
 
 function deleteOne(list, id) {
     for (let i = 0; i < list.length; i++) {
@@ -57,6 +58,10 @@ function deleteOne(list, id) {
         }
     }
 }
+
+// function getSorting(order, orderBy) {
+//     return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+// }
 
 const headRows = [
 
@@ -76,6 +81,7 @@ class EnhancedTableHead extends React.Component {
         const { order, orderBy, onRequestSort } = this.props;
         const createSortHandler = property => event => {
             onRequestSort(event, property);
+            this.props.sortAllSoldier(order,orderBy);
         };
         return (
             <TableHead>
@@ -147,7 +153,7 @@ const styles = makeStyles(theme => ({
 const toCreate = props => <AddIcon onClick={() => { props.history.push('/create') }} />;
 
 const toEdit = props => <EditIcon onClick={() => {
-    props.history.push({ pathname: '/edit', state: { soldier: props.soldier } });
+    props.history.push({ pathname: '/edit', state: { id: props.id } });
 }} />;
 
 
@@ -175,6 +181,14 @@ class App extends React.Component {
         this.handleSearch = this.handleSearch.bind(this);
     }
 
+    handleRequestSort = (event, property) => {
+        const isDesc = this.state.orderBy === property && this.state.order === 'desc';
+        this.setState({ order: isDesc ? 'asc' : 'desc' });
+        this.setState({ orderBy: property });
+    }
+    // handleChangePage = (event, newPage) => {
+    //     this.setState({ page: newPage });
+    // }
     handleSearch(event) {
         this.setState({ item: event.target.value });
     }
@@ -183,17 +197,20 @@ class App extends React.Component {
         this.props.soldierList.list = deleteOne(this.props.soldierList.list, id);
     }
     showParent = (parentId) => {
-        this.props.getOneSoldier(parentId._id);
-        const { props: { soldierList: { list } } } = this;
-        this.props.soldierList.list = list;
-        console.log(list);
+        this.props.getOneSoldier(parentId);
+        if (!this.props.soldierList.isLoading) {
+            const { props: { soldierList: { soldier } } } = this;
+            console.log(soldier);
+            this.props.soldierList.list = soldier;
+
+        }
         // this.props.soldierList.list = 
     }
     showChildren = (id) => {
         this.props.getChildren(id);
     }
     render() {
-        let {
+        const {
             state: {
                 item,
             },
@@ -207,72 +224,70 @@ class App extends React.Component {
                 {isLoading && <div>Loading ...</div>}
                 {!isLoading &&
                     <div> {error && <div style={{ color: "red" }}>Oops...</div>}
-                        {list.length > 0 &&
-                            <Paper className={classes.paper}>
-                                <Typography variant="h4" id="tableTitle">
-                                    US Amary Personal Registry
+
+                        <Paper className={classes.paper}>
+                            <Typography variant="h4" id="tableTitle">
+                                US Amary Personal Registry
                                     </Typography>
-                                <br />
-                                <TextField right='10' type='text' value={item} onChange={this.handleSearch} placeholder='search' />
-                                <IconButton onClick={() => this.componentDidMount()}><RefreshIcon /></IconButton>
-                                <IconButton align='right'><WithCreateButton /></IconButton>
-                                <div className={classes.tableWrapper}>
-                                    <Table
-                                        className={classes.table}
-                                        aria-labelledby="tableTitle">
-                                        <EnhancedTableHead
-                                            classes={classes}
-                                            order={this.state.order}
-                                            orderBy={this.state.orderBy}
-                                            onRequestSort={this.handleRequestSort}
-                                        />
-                                        {/* <InfiniteScroll
+                            <br />
+                            <TextField right='10' type='text' value={item} onChange={this.handleSearch} placeholder='search' />
+                            <IconButton onClick={() => this.componentDidMount()}><RefreshIcon /></IconButton>
+                            <IconButton align='right'><WithCreateButton /></IconButton>
+                            <div className={classes.tableWrapper}>
+                                <Table
+                                    className={classes.table}
+                                    aria-labelledby="tableTitle">
+                                    <EnhancedTableHead
+                                        classes={classes}
+                                        order={this.state.order}
+                                        orderBy={this.state.orderBy}
+                                        onRequestSort={this.handleRequestSort}
+                                    />
+                                    {/* <InfiniteScroll
                                             dataLength={list.length}
                                             next={this.fetchSoldiers}
                                             hasMore={true}
                                             loader={<h4>Loading...</h4>}
                                         > */}
-                                        <TableBody>
-                                            {stableSort(list, getSorting(this.state.order, this.state.orderBy))
-                                                .map(row => {
-                                                    return (
-                                                        <TableRow key={row._id} hover tabIndex={-1}>
-                                                            <TableCell>
-                                                                <IconButton aria-label="edit"><WithEditButton
-                                                                    soldier={row}
-                                                                /></IconButton>
+                                    <TableBody>
+                                        {list.map(row => {
+                                            return (
+                                                <TableRow key={row._id} hover tabIndex={-1}>
+                                                    <TableCell>
+                                                        <IconButton aria-label="edit"><WithEditButton
+                                                            id={row._id}
+                                                        /></IconButton>
 
-                                                            </TableCell>
-                                                            <TableCell><IconButton aria-label="delete"
-                                                                onClick={() => this.handleDelete(row._id)}>
-                                                                <DeleteIcon /></IconButton></TableCell>
-                                                            {/* <TableCell align="left">{row.img}</TableCell> */}
-                                                            <TableCell align="left">{row.name}</TableCell>
-                                                            <TableCell align="left">{row.sex}</TableCell>
-                                                            {row.parentId &&
-                                                                <TableCell align="left" onClick={() =>
-                                                                    list = this.props.getOneSoldier(row.parentId._id)}>
-                                                                    {row.parentId.name}</TableCell>
-                                                            }
-                                                            {
+                                                    </TableCell>
+                                                    <TableCell><IconButton aria-label="delete"
+                                                        onClick={() => this.handleDelete(row._id)}>
+                                                        <DeleteIcon /></IconButton></TableCell>
+                                                    {/* <TableCell align="left">{row.img}</TableCell> */}
+                                                    <TableCell align="left">{row.name}</TableCell>
+                                                    <TableCell align="left">{row.sex}</TableCell>
+                                                    {row.parentId &&
+                                                        <TableCell align="left" ><Button onClick={() => this.showParent(row.parentId._id)}>
+                                                            {row.parentId.name}</Button></TableCell>
+                                                    }
+                                                    {
 
-                                                            }
-                                                            {/* <TableCell align="left">{row.rank}</TableCell>
+                                                    }
+                                                    {/* <TableCell align="left">{row.rank}</TableCell>
                                                                 <TableCell align="left">{row.startDate}</TableCell>
                                                                 <TableCell align="left">{row.phone}</TableCell>
                                                                 <TableCell align="left">{row.email}</TableCell>
                                                                
                                                                 <TableCell align="left">{row.numOfChildren}</TableCell> */}
-                                                        </TableRow>
-                                                    );
-                                                })}
+                                                </TableRow>
+                                            );
+                                        })}
 
-                                        </TableBody>
-                                        {/* </InfiniteScroll> */}
-                                    </Table>
-                                </div>
-                            </Paper>
-                        }
+                                    </TableBody>
+                                    {/* </InfiniteScroll> */}
+                                </Table>
+                            </div>
+                        </Paper>
+
                     </div>
                 }
             </div>
@@ -298,6 +313,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         getChildren: (id) => {
             dispatch(getDirectChildren(id))
+        },
+        sortAllSoldiers:(order,orderBy)=>{
+            dispatch(sortAll(order,oderBy))
         }
     };
 };

@@ -8,6 +8,26 @@ router.route('/').get((req, res) => {
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
+router.route('/:sort').get((req, res) => {
+  let sort = {};
+  if (req.params.sort === 'nameasc') {
+    sort = { name: 1 };
+  } else if (req.params.sort === 'namedesc') {
+    sort = { name: -1 };
+  } else if (req.params.sort === 'sexasc') {
+    sort = { sex: 1 };
+  } else if (req.params.sort === 'sexdesc') {
+    sort = { sex: -1 };
+  } else if (req.params.sort === 'parentasc') {
+    sort = { parentId: 1 };
+  } else if (req.params.sort === 'parentdesc') {
+    sort = { parentId: -1 };
+  }
+
+  Soldier.find().sort(sort)
+    .then(soldiers => res.json(soldiers))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
 
 //get one user by id
 router.route('/:id').get((req, res) => {

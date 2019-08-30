@@ -1,14 +1,14 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
 import { connect } from "react-redux";
-import { editSoldier } from "../../../redux/action-creators";
+import { editSoldier, getOne } from "../../../redux/action-creators";
 import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 
 
 const edit = props => {
-    const { firstName, lastName, gender, age, password, repeatPassword } = props.user;
+    const { firstName, lastName, gender, age, password, repeatPassword } = props.soldier;
     return (
         <Button disabled={!firstName || !lastName || !gender || !age || !password || !repeatPassword || (password !== repeatPassword)} variant="contained" color="primary"
             onClick={() => {
@@ -21,7 +21,7 @@ const edit = props => {
 
 const cancel = props => {
     return (
-        <Button variant="contained"  onClick={() => { props.history.push('/') }}> Cancel</Button>
+        <Button variant="contained" onClick={() => { props.history.push('/') }}> Cancel</Button>
     );
 };
 
@@ -30,119 +30,71 @@ const WithCancelButton = withRouter(cancel);
 
 
 class Edit extends React.Component {
+    componentDidMount() {
+        this.props.getOneSoldier(this.props.location.state.id);
 
+    }
     constructor(props) {
         super(props);
         this.state = {
-            user: {
+            soldier: {
                 id: '',
-                firstName: '',
-                lastName: '',
-                gender: '',
-                age: 0,
-                password: '',
-                repeatPassword: ''
+                name: '',
+                sex: '',
+                parent: ''
             }
         }
     }
-
-    componentWillMount() {
-        this.setState({
-            user: {
-                ...this.state.user, id: this.props.location.state.user._id,
-                firstName: this.props.location.state.user.firstName,
-                lastName: this.props.location.state.user.lastName,
-                gender: this.props.location.state.user.gender,
-                age: this.props.location.state.user.age
-            }
-        });
-    }
-
     handleChange = (event) => {
-        const { user } = this.state;
-        user[event.target.id] = event.target.value;
-        this.setState({ user });
-    }
-    changeAge = (event) => {
-        const { user } = this.state;
-        const age = parseInt(event.target.value);
-        user[event.target.id] = age;
-        this.setState({ user });
+        const { soldier } = this.state;
+        soldier[event.target.id] = event.target.value;
+        this.setState({ soldier });
     }
 
     render() {
-        const { state: { user } } = this;
+        const { props: { soldierList: { soldier } } } = this;
         return (
             <div align='center'>
-                <h2>Edit User</h2>
+                <h2>Edit Soldier</h2>
 
                 <form >
                     <TextField
                         required
-                        id="firstName"
-                        label="First Name"
-                        defaultValue={user.firstName}
+                        id="name"
+                        label="Name"
+                        defaultValue={soldier.name}
                         margin="normal"
                         onChange={this.handleChange}
                     />
                     <br />
                     <TextField
                         required
-                        id="lastName"
-                        label="Last Name"
-                        defaultValue={user.lastName}
-                        margin="normal"
-                        onChange={this.handleChange}
-                    />
-                    <br />
-                    <TextField
-                        required
-                        id="gender"
+                        id="sex"
                         label="Sex"
-                        defaultValue={user.gender}
+                        defaultValue={soldier.sex}
                         margin="normal"
                         onChange={this.handleChange}
                     />
                     <br />
                     <TextField
                         required
-                        id="age"
-                        label="Age"
-                        defaultValue={user.age}
-                        margin="normal"
-                        onChange={this.changeAge}
-                    />
-                    <br />
-                    <TextField
-                        required
-                        id="password"
-                        label="Password"
-                        type="password"
+                        id="parent"
+                        label="Parent"
+                        defaultValue={(soldier.parentId)
+                        }
                         margin="normal"
                         onChange={this.handleChange}
                     />
-                    <br />
-                    <TextField
-                        required
-                        error={user.password !== user.repeatPassword}
-                        id="repeatPassword"
-                        label="Repeat Password"
-                        type="password"
-                        margin="normal"
-                        onChange={this.handleChange}
-                    />
-                </form> <br/>
+                </form> <br />
                 <div onClick={() => {
-                    let newUser = user;
-                    const id = user.id;
-                    delete newUser.repeatPassword;
-                    delete newUser.id;
-                    console.log(id, newUser);
-                    this.props.editUser(id, user);
+                    let newSoldier = soldier;
+                    const id = soldier._id;
+                    delete newSoldier._id;
+                    this.props.editSoldier(id, soldier);
                 }}>
-                    <WithHomeButton user={user} />
-                </div><br/>
-                <WithCancelButton/>
+                    <WithHomeButton soldier={soldier} />
+                </div><br />
+                <WithCancelButton />
             </div>
         );
     }
@@ -156,6 +108,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        getOneSoldier: (id) => {
+            dispatch(getOne(id));
+        },
         editSoldier: (id, soldier) => {
             dispatch(editSoldier(id, soldier));
         }
