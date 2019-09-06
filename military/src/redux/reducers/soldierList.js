@@ -1,8 +1,8 @@
 const initState = {
     isLoading: false,
     list: [],
-    soldier: {},
-    error: null
+    error: null,
+    isDeleting: false
 };
 const soldierList = (state = initState, action) => {
     switch (action.type) {
@@ -15,7 +15,7 @@ const soldierList = (state = initState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                list: action.data,
+                list: initState.list.concat(action.data),
                 error: null
             };
         case "GET_ALL_FAIL":
@@ -60,38 +60,19 @@ const soldierList = (state = initState, action) => {
                 isLoading: false,
                 error: action.err
             };
-        case "GET_ONE_START":
+        case "GET_AVAILABLEPARENT_START":
             return {
                 ...state,
                 isLoading: true
             };
-        case "GET_ONE_SUCCESS":
-            return {
-                ...state,
-                isLoading: false,
-                list: action.data,
-                soldier: action.data,
-                error: null
-            };
-        case "GET_ONE_FAIL":
-            return {
-                ...state,
-                isLoading: false,
-                error: action.err
-            };
-        case "GET_CHILDREN_START":
-            return {
-                ...state,
-                isLoading: true
-            };
-        case "GET_CHILDREN_SUCCESS":
+        case "GET_AVAILABLEPARENT_SUCCESS":
             return {
                 ...state,
                 isLoading: false,
                 list: action.data,
                 error: null
             };
-        case "GET_CHILDREN_FAIL":
+        case "GET_AVAILABLEPARENT_FAIL":
             return {
                 ...state,
                 isLoading: false,
@@ -119,17 +100,20 @@ const soldierList = (state = initState, action) => {
             return {
                 ...state,
                 isLoading: true,
+                isDeleting: true
             };
         case "DELETE_ONE_SUCCESS":
             return {
                 ...state,
                 isLoading: false,
+                isDeleting: false,
                 error: null
             };
         case "DELETE_ONE_FAIL":
             return {
                 ...state,
                 isLoading: false,
+                isDeleting: false,
                 error: action.err
             };
         case "CREATE_ONE_START":

@@ -3,21 +3,19 @@ let Soldier = require('../model/soldier.model');
 const router = express.Router();
 
 //get all userss
-router.route('/').get((req, res) => {
-  Soldier.find().populate('parentId', 'name')
+router.route('/:page').get((req, res) => {
+  Soldier.find().populate('parentId', 'name').skip(req.params.page * 3).limit(3)
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
-
 
 //backend search
 router.route('/search/:search').get((req, res) => {
   console.log(req.params.search);
-  Soldier.find().populate('parentId', 'name').find({ $text: { $search: `${req.params.search}` } })
+  Soldier.find({ $text: { $search: `${req.params.search}` } }).populate('parentId', 'name')
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
-
 
 //backend sort 
 router.route('/sort/:sort').get((req, res) => {
@@ -40,20 +38,11 @@ router.route('/sort/:sort').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-//get one user by id
-router.route('/:id').get((req, res) => {
-  Soldier.findById(req.params.id)
-    .then(soldier => res.json(soldier))
-    .catch(err => res.status(400).json('Error: ' + err));
-});
 
-//get all children of one user
-router.route('/:id/children').get((req, res) => {
-  Soldier.findById(req.params.id)
-    .then(soldier => {
-      soldier.getChildren()
-        .then(children => res.json(children))
-    })
+//get possible parent of one soldier
+router.route('/:id/availableParent').get((req, res) => {
+  Soldier.find({ "path": { "$not": { "$all": [req.params.id] } } })
+    .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
@@ -66,26 +55,29 @@ router.route('/:id/dirchildren').get((req, res) => {
 
 //create new user
 router.route('/create').post((req, res) => {
-  const { /*img,*/ name, sex, parent/*, startDate, phone, rank, email*/ } = req.body;
+  const { avatar, name, sex, parentId, startDate, rank, email } = req.body;
+  const numOfChildren = 0;
   const newSoldier = new Soldier({
-    // img,
+    avatar,
     name,
     sex,
-    /*startDate,
-    phone,
     rank,
-    email*/
+    startDate,
+    email,
+    numOfChildren
   });
   //newSoldier.parent = Soldier.findById(parent);
-  if (!parent)
+  if (!parentId)
     newSoldier.save()
       .then(() => res.json('Soldier has been created.'))
       .catch(err => res.status(400).json('Error: ' + err));
 
-  if (parent) {
-    Soldier.findById(parent)
+  if (parentId) {
+    Soldier.findById(parentId._id)
       .then(soldier => {
         soldier.appendChild(newSoldier);
+        soldier.numOfChildren++;
+        soldier.save();
       })
       .then(() => res.json('Soldier has been created.'))
       .catch(err => res.status(400).json('Error: ' + err));
@@ -95,16 +87,32 @@ router.route('/create').post((req, res) => {
 //edit one user by id
 router.route('/edit/:id').post((req, res) => {
   Soldier.findById(req.params.id)
-    .then(soldier => {
-      soldier.name = req.body.name;
-      soldier.sex = req.body.sex;
-      soldier.parentId = req.body.parent;
-      /*soldier.startDate = req.body.startDate;
-      soldier.phone = req.body.phone;
-      soldier.rank = req.body.rank;
-      soldier.email = req.body.email;
-      soldier.parent = Soldier.findById(req.body.parent);*/
-      soldier.save()
+    .then(newSoldier => {
+      if (newSoldier.parentId && req.body.parentId && newSoldier.parentId !== req.body.parentId) {
+        Soldier.findById(newSoldier.parentId._id)
+          .then(
+            parent => {
+              parent.numOfChildren--;
+              parent.save();
+            }
+          )
+      }
+      newSoldier.name = req.body.name;
+      newSoldier.sex = req.body.sex;
+      //newSoldier.parentId = req.body.parent;
+      //soldier.startDate = req.body.startDate;
+      //soldier.phone = req.body.phone;
+      newSoldier.rank = req.body.rank;
+      newSoldier.email = req.body.email;
+      if (req.body.parentId && req.body.parnetId !== newSoldier.parentId) {
+        Soldier.findById(req.body.parentId._id)
+          .then(soldier => {
+            soldier.appendChild(newSoldier);
+            soldier.numOfChildren++;
+            soldier.save();
+          })
+      }
+      newSoldier.save()
         .then(() => res.json('Soldier updated!'))
         .catch(err => res.status(400).json('Error: ' + err));
     })
@@ -114,8 +122,40 @@ router.route('/edit/:id').post((req, res) => {
 //delete one user by id
 router.route('/delete/:id').delete((req, res) => {
   console.log('deleting');
-  Soldier.Remove({ _id: req.params.id })
-    .then(() => res.json('Soldier has been deleted.'))
+  Soldier.findById(req.params.id)
+    .then(soldier => {
+      if (soldier.parentId) {
+        Soldier.findById(soldier.parentId._id)
+          .then(parent => {
+            parent.numOfChildren--;
+            parent.save();
+          })
+      }
+      if (soldier.numOfChildren > 0) {
+        if (soldier.numOfChildren = 1) {
+          Soldier.find({ parentId: req.params.id })
+            .then(child => {
+              child.parentId = null;
+              children.path = null;
+              child.save();
+            })
+        } else if (soldier.numOfChildren > 1) {
+          Soldier.find({ parentId: req.params.id })
+            .then(children => {
+              for (child of children) {
+                child.parentId = null;
+                children.path = null;
+                child.save();
+              }
+            })
+        }
+      }
+    })
+    .then(
+      Soldier.findByIdAndDelete(req.params.id)
+        .then(() => res.json('Soldier has been deleted.'))
+        .catch(err => res.status(400).json('Error: ' + err))
+    )
     .catch(err => res.status(400).json('Error: ' + err));
 });
 

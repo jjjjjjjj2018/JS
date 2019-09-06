@@ -58,44 +58,23 @@ function searchAllFail(error) {
 }
 
 
-//get one soldier action
-function getOneStart() {
+//get possible parent of one soldier
+function getAvailableParentStart() {
   return {
-    type: 'GET_ONE_START',
+    type: 'GET_AVAILABLEPARENT_START',
   };
 }
 
-function getOneSuccess(response) {
+function getAvailableParentSuccess(response) {
   return {
-    type: 'GET_ONE_SUCCESS',
+    type: 'GET_AVAILABLEPARENT_SUCCESS',
     data: response.data,
   };
 }
 
-function getOneFail(error) {
+function getAvailableParentFail(error) {
   return {
-    type: 'GET_ONE_FAIL',
-    error,
-  };
-}
-
-//get one soldier's children
-function getChildrenStart() {
-  return {
-    type: 'GET_CHILDREN_START',
-  };
-}
-
-function getChildrenSuccess(response) {
-  return {
-    type: 'GET_CHILDREN_SUCCESS',
-    data: response.data,
-  };
-}
-
-function getChildrenFail(error) {
-  return {
-    type: 'GET_CHILDREN_FAIL',
+    type: 'GET_AVAILABLEPARENT_FAIL',
     error,
   };
 }
@@ -177,11 +156,11 @@ function editOneFail(error) {
 
 
 
-export function getAll() {
+export function getAll(page) {
   return (dispatch) => {
     dispatch(getAllStart());
     axios
-      .get('http://localhost:8080/soldiers')
+      .get(`http://localhost:8080/soldiers/${page}`)
       .then(response => {
         dispatch(getAllSuccess(response));
       })
@@ -217,35 +196,23 @@ export function sortAll(order, orderBy) {
         dispatch(sortAllSuccess(response));
       })
       .catch(err => {
-        dispatch(getAllFail(err));
+        dispatch(sortAllFail(err));
       });
   };
 }
 
-export function getOne(id) {
-  return (dispatch) => {
-    dispatch(getOneStart());
-    axios
-      .get(`http://localhost:8080/soldiers/${id}`)
-      .then(response => {
-        dispatch(getOneSuccess(response));
-      })
-      .catch(err => {
-        dispatch(getOneFail(err));
-      });
-  };
-}
 
-export function getChildren(id) {
+
+export function getAvailableParent(id) {
   return (dispatch) => {
-    dispatch(getChildrenStart());
+    dispatch(getAvailableParentStart());
     axios
-      .get(`http://localhost:8080/soldiers/${id}/children`)
+      .get(`http://localhost:8080/soldiers/${id}/availableParent`)
       .then(response => {
-        dispatch(getChildrenSuccess(response));
+        dispatch(getAvailableParentSuccess(response));
       })
       .catch(err => {
-        dispatch(getChildrenFail(err));
+        dispatch(getAvailableParentFail(err));
       });
   };
 }
@@ -288,13 +255,14 @@ export function createSoldier(soldier) {
   };
 }
 
-export function editSoldier(id, soldier) {
+export function editSoldier(id, soldier, history) {
   return (dispatch) => {
     dispatch(editOneStart());
     axios
       .post(`http://localhost:8080/soldiers/edit/${id}`, soldier)
       .then(
-        dispatch(editOneSuccess()))
+        console.log(id),
+        dispatch(editOneSuccess()), history.push('/'))
       .catch(err => {
         dispatch(editOneFail(err));
       });

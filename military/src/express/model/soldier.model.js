@@ -10,7 +10,8 @@ const soldierSchema = new Schema({
     sex: { type: String, text: true },
     email: { type: String , text: true},
     rank: { type: String , text: true},
-    startDate: { type: String , text: true}
+    startDate: { type: String , text: true},
+    numOfChildren:{type:Number}
 
 
 }, { timestamps: true });

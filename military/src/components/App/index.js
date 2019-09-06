@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getAll, deleteSoldier, getOne, getDirectChildren, sortAll, searchAll } from "../../redux/action-creators";
+import { getAll, deleteSoldier, getDirectChildren, sortAll, searchAll } from "../../redux/action-creators";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
@@ -20,60 +20,20 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Button from '@material-ui/core/Button';
+//import InfiniteScroll from 'redux-infinite-scroll';
 
-// function desc(a, b, orderBy) {
-//     if (b[orderBy] < a[orderBy]) {
-//         return -1;
-//     }
-//     if (b[orderBy] > a[orderBy]) {
-//         return 1;
-//     }
-//     return 0;
-// }
-
-// function stableSort(array, cmp) {
-//     const stabilizedThis = array.map((el, index) => [el, index]);
-//     stabilizedThis.sort((a, b) => {
-//         const order = cmp(a[0], b[0]);
-//         if (order !== 0) return order;
-//         return a[1] - b[1];
-//     });
-//     return stabilizedThis.map(el => el[0]);
-// }
-
-// function getSorting(order, orderBy) {
-//     return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
-// }
-
-// function searchingFor(item) {
-//     return function (x) {
-//         return x.firstName.includes(item) || x.lastName.includes(item) || x.gender.includes(item) || x.age.toString().includes(item) || !item;
-//     }
-// }
-
-function deleteOne(list, id) {
-    for (let i = 0; i < list.length; i++) {
-        if (list[i]._id === id) {
-            return list.splice(i, 1);
-        }
-    }
-}
-
-// function getSorting(order, orderBy) {
-//     return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
-// }
 
 const headRows = [
 
     // { id: 'img', numeric: false, label: 'Avatar' },
-    { id: 'name', numeric: false, label: 'Name' }, 
+    { id: 'name', numeric: false, label: 'Name' },
     { id: 'sex', numeric: false, label: 'Sex' },
-     { id: 'rank', numeric: true, label: 'Rank' },
+    { id: 'rank', numeric: true, label: 'Rank' },
     // { id: 'phone', numeric: true, lable: 'Phone' },
-    { id: 'email', numeric: false, label: 'Email' },
-    { id: 'startDate', numeric: true, label: 'Start Date' },
+    //{ id: 'email', numeric: false, label: 'Email' },
+    //{ id: 'startDate', numeric: true, label: 'Start Date' },
 
-   
+
     // { id: 'phone', numeric: false, label: 'Phone' },
     // { id: 'email', numeric: false, label: 'Email' },
     // { id: 'numOfChildren', numeric: false, label: '# of D.S.' }
@@ -106,6 +66,7 @@ class EnhancedTableHead extends React.Component {
                             </TableSortLabel>
                         </TableCell>
                     ))}
+                    <TableCell align='center'>Email</TableCell>
                     <TableCell align='center'>Superior</TableCell>
                     <TableCell align='center'># of D.S.</TableCell>
 
@@ -159,7 +120,7 @@ const styles = makeStyles(theme => ({
 const toCreate = props => <AddIcon onClick={() => { props.history.push('/create') }} />;
 
 const toEdit = props => <EditIcon onClick={() => {
-    props.history.push({ pathname: '/edit', state: { id: props.id } });
+    props.history.push({ pathname: '/edit', state: { soldier: props.soldier } });
 }} />;
 
 
@@ -169,13 +130,14 @@ const WithCreateButton = withRouter(toCreate);
 
 class App extends React.Component {
     componentDidMount() {
-        this.props.getAllSoldiers();
+        this.props.getAllSoldiers(this.state.page);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.order !== prevState.order || this.state.orderBy !== prevState.orderBy)
             this.props.sortAllSoldiers(this.state.order, this.state.orderBy);
-        // if (this.state.item !== prevState.item)
-        //     this.props.searchAllSoldiers(this.state.item);
+        if (this.props.soldierList.isDeleting !== prevProps.soldierList.isDeleting)
+            this.props.getAllSoldiers();
+
     }
     constructor(props) {
         super(props);
@@ -185,9 +147,7 @@ class App extends React.Component {
             order: 'desc',
             orderBy: '_id',
             page: 0,
-            rowsPerPage: 5,
-            item: '',
-            typingTimeout: 0
+            item: ''
         }
 
         this.handleSearch = this.handleSearch.bind(this);
@@ -205,42 +165,46 @@ class App extends React.Component {
         this.setState({
             item: event.target.value,
         });
-        this.searching();
-    }
-
-    searching = () => {
         setTimeout(() => {
-            console.log(this.state.item);
             this.props.searchAllSoldiers(this.state.item);
         }, 700);
+
     }
+
 
     handleDelete = (id) => {
         this.props.deleteSoldier(id);
-        this.props.soldierList.list = deleteOne(this.props.soldierList.list, id);
     }
     showParent = (parentId) => {
+        //this.props.searchAllSoldiers(parentId);
         this.props.getOneSoldier(parentId);
-        if (!this.props.soldierList.isLoading) {
-            const { props: { soldierList: { soldier } } } = this;
-            console.log(soldier);
-            this.props.soldierList.list = soldier;
+        // if (!this.props.soldierList.isLoading) {
+        //     const { props: { soldierList: { soldier } } } = this;
+        //     console.log(soldier);
+        //     this.props.soldierList.list = soldier;
 
-        }
+        // }
         // this.props.soldierList.list = 
     }
     showChildren = (id) => {
         this.props.getChildren(id);
     }
+    fetchSoldiers = () => {
+        this.props.getAllSoldiers(this.state.page);
+        this.setState({ page: +1 });
+    }
     render() {
-        const {
+        let {
             state: {
-                item,
+                item
             },
             props: {
                 soldierList: { list, isLoading, error }, classes,
             }
         } = this;
+        if (!Array.isArray(list)) {
+            list = [list];
+        }
 
         return (
             <div className={classes.root}><Typography variant="h4" id="tableTitle">
@@ -264,19 +228,16 @@ class App extends React.Component {
                                         orderBy={this.state.orderBy}
                                         onRequestSort={this.handleRequestSort}
                                     />
-                                    {/* <InfiniteScroll
-                                            dataLength={list.length}
-                                            next={this.fetchSoldiers}
-                                            hasMore={true}
-                                            loader={<h4>Loading...</h4>}
-                                        > */}
                                     <TableBody>
+                                        {/* <InfiniteScroll
+                                            loadMore={this.fetchSoldiers}
+                                        > */}
                                         {list.map(row => {
                                             return (
                                                 <TableRow key={row._id} hover tabIndex={-1}>
                                                     <TableCell align='center'>
                                                         <IconButton aria-label="edit"><WithEditButton
-                                                            id={row._id}
+                                                            soldier={row}
                                                         /></IconButton>
 
                                                     </TableCell>
@@ -289,16 +250,16 @@ class App extends React.Component {
                                                     }
                                                     <TableCell align="center">{row.name}</TableCell>
                                                     <TableCell align="center">{row.sex}</TableCell>
-
-                                                    <TableCell></TableCell>
-                                                    <TableCell align='center'><Button onClick={() => window.location.href = `mailto:${row.email}`}> {row._id}</Button></TableCell>
-                                                    <TableCell></TableCell>
+                                                    <TableCell>{row.rank}</TableCell>
+                                                    <TableCell align='center'><Button onClick={() => window.location.href = `mailto:${row.email}`}> {row.email}</Button></TableCell>
+                                                    {!row.parentId && <TableCell />}
                                                     {row.parentId &&
                                                         <TableCell align="center" ><Button onClick={() => this.showParent(row.parentId._id)}>
                                                             {row.parentId.name}</Button></TableCell>
                                                     }
-                                                    {
-
+                                                    {row.numOfChildren === 0 && <TableCell />}
+                                                    {row.numOfChildren !== 0 &&
+                                                        <TableCell> <Button onClick={() => this.showChildren(row._id)}>{row.numOfChildren} </Button></TableCell>
                                                     }
                                                     {/* <TableCell align="left">{row.rank}</TableCell>
                                                                 <TableCell align="left">{row.startDate}</TableCell>
@@ -309,7 +270,7 @@ class App extends React.Component {
                                                 </TableRow>
                                             );
                                         })}
-
+                                        {/* </InfiniteScroll> */}
                                     </TableBody>
                                     {/* </InfiniteScroll> */}
                                 </Table>
@@ -335,9 +296,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         deleteSoldier: (id) => {
             dispatch(deleteSoldier(id));
-        },
-        getOneSoldier: (id) => {
-            dispatch(getOne(id));
         },
         getChildren: (id) => {
             dispatch(getDirectChildren(id))
