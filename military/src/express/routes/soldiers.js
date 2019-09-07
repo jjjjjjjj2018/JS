@@ -4,14 +4,13 @@ const router = express.Router();
 
 //get all userss
 router.route('/:page').get((req, res) => {
-  Soldier.find().populate('parentId', 'name').skip(req.params.page * 3).limit(3)
+  Soldier.find().populate('parentId', 'name')/*.skip(req.params.page * 3).limit(3)*/
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
 //backend search
 router.route('/search/:search').get((req, res) => {
-  console.log(req.params.search);
   Soldier.find({ $text: { $search: `${req.params.search}` } }).populate('parentId', 'name')
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
@@ -28,12 +27,19 @@ router.route('/sort/:sort').get((req, res) => {
     sort = { sex: 1 };
   } else if (req.params.sort === 'sexdesc') {
     sort = { sex: -1 };
-  } else if (req.params.sort === 'parentasc') {
-    sort = { parentId: 1 };
-  } else if (req.params.sort === 'parentdesc') {
-    sort = { parentId: -1 };
+  } else if (req.params.sort === 'emailasc') {
+    sort = { email: 1 };
+  } else if (req.params.sort === 'emaildesc') {
+    sort = { email: -1 };
   }
   Soldier.find().populate('parentId', 'name').sort(sort)
+    .then(soldiers => res.json(soldiers))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+//get one user by id
+router.route('/:id').get((req, res) => {
+  Soldier.findById(req.params.id).populate('parendId', 'name')
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -55,14 +61,13 @@ router.route('/:id/dirchildren').get((req, res) => {
 
 //create new user
 router.route('/create').post((req, res) => {
-  const { avatar, name, sex, parentId, startDate, rank, email } = req.body;
+  const { avatar, name, sex, parentId, rank, email } = req.body;
   const numOfChildren = 0;
   const newSoldier = new Soldier({
     avatar,
     name,
     sex,
     rank,
-    startDate,
     email,
     numOfChildren
   });
@@ -73,7 +78,7 @@ router.route('/create').post((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 
   if (parentId) {
-    Soldier.findById(parentId._id)
+    Soldier.findById(parentId)
       .then(soldier => {
         soldier.appendChild(newSoldier);
         soldier.numOfChildren++;
@@ -86,10 +91,12 @@ router.route('/create').post((req, res) => {
 
 //edit one user by id
 router.route('/edit/:id').post((req, res) => {
-  Soldier.findById(req.params.id)
+  Soldier.findById(req.params.id).populate('parentId', '_id')
     .then(newSoldier => {
-      if (newSoldier.parentId && req.body.parentId && newSoldier.parentId !== req.body.parentId) {
-        Soldier.findById(newSoldier.parentId._id)
+      console.log(newSoldier);
+      if (newSoldier.parentId && parentId._id !== req.body.parentId._id) {
+        console.log(parentId._id);
+        Soldier.findById(parentId._id)
           .then(
             parent => {
               parent.numOfChildren--;
@@ -97,14 +104,14 @@ router.route('/edit/:id').post((req, res) => {
             }
           )
       }
-      newSoldier.name = req.body.name;
-      newSoldier.sex = req.body.sex;
       //newSoldier.parentId = req.body.parent;
       //soldier.startDate = req.body.startDate;
       //soldier.phone = req.body.phone;
+      newSoldier.name = req.body.name;
+      newSoldier.sex = req.body.sex;
       newSoldier.rank = req.body.rank;
       newSoldier.email = req.body.email;
-      if (req.body.parentId && req.body.parnetId !== newSoldier.parentId) {
+      if (req.body.parentId && req.body.parnetId._id !== parentId._id) {
         Soldier.findById(req.body.parentId._id)
           .then(soldier => {
             soldier.appendChild(newSoldier);
@@ -112,6 +119,7 @@ router.route('/edit/:id').post((req, res) => {
             soldier.save();
           })
       }
+      console.log(newSoldier);
       newSoldier.save()
         .then(() => res.json('Soldier updated!'))
         .catch(err => res.status(400).json('Error: ' + err));
@@ -121,7 +129,6 @@ router.route('/edit/:id').post((req, res) => {
 
 //delete one user by id
 router.route('/delete/:id').delete((req, res) => {
-  console.log('deleting');
   Soldier.findById(req.params.id)
     .then(soldier => {
       if (soldier.parentId) {

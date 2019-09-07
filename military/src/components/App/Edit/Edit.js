@@ -11,7 +11,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 //(General, Colonel, Major, Captain, Lieutenant, Warrant Officer, Sergeant, Corporal,Specialist, Private)
 const ranks = [
-    { label: 'General', rank: 'General', },
+    { label: 'General', value: 'General', },
     { label: 'Colonel', value: 'Colonel', },
     { label: 'Major', value: 'Major', },
     { label: 'Captain', value: 'Captain', },
@@ -24,7 +24,6 @@ class Edit extends React.Component {
     componentDidMount() {
         this.props.getAvailableParent(this.props.location.state.soldier._id);
         //this.props.getAllSoldiers();
-        console.log(this.props.location.state.soldier._id);
         this.setState({
             soldier: this.props.location.state.soldier
         });
@@ -35,10 +34,10 @@ class Edit extends React.Component {
         super(props);
         this.state = {
             soldier: {
-                id: '',
+                _id: '',
                 name: '',
                 sex: '',
-                parentId: '',
+                parentId: {},
                 avatar: '',
                 rank: ''
             }
@@ -49,27 +48,22 @@ class Edit extends React.Component {
         const { soldier } = this.state;
         soldier[event.target.id] = event.target.value;
         this.setState({ soldier });
-        console.log(soldier);
     }
     handleChangeRank = (event) => {
         const { soldier } = this.state;
         soldier.rank = event.target.value;
         this.setState({ soldier });
-        console.log(this.state.soldier.rank);
     }
     handleChangeParent = (event) => {
         const { soldier } = this.state;
         soldier.parentId = event.target.value;
         this.setState({ soldier });
-        console.log(event.target.value);
-        console.log(soldier.parent);
     }
 
     onDrop = (picture) => {
         const { soldier } = this.state;
         soldier.avatar = picture[0].name;
         this.setState({ soldier });
-        console.log(this.state.soldier.avatar)
     }
 
     render() {
@@ -79,7 +73,7 @@ class Edit extends React.Component {
         if (soldier.parentId) {
             parent = soldier.parentId
         } else {
-            parent = { id: ' ', name: ' ' }
+            parent = { _id: ' ', name: ' ' }
         }
         // for (let oneSoldier of list) {
         //     if (oneSoldier._id === soldier.id && soldier.parentId) {
@@ -89,7 +83,6 @@ class Edit extends React.Component {
         //         parent = { name }
         //     }
         // }
-        console.log(soldier);
         return (
 
             <div align='center'>
@@ -98,7 +91,7 @@ class Edit extends React.Component {
                 {!isLoading &&
                     <form > {error && <div style={{ color: "red" }}>Oops...</div>}
 
-                        <img width='200' height='200' src={process.env.PUBLIC_URL + soldier.avatar} />
+                        <img width='200' height='200' alt='avatar' src={process.env.PUBLIC_URL + soldier.avatar} />
 
                         <ImageUploader
                             withIcon={false}
@@ -169,13 +162,9 @@ class Edit extends React.Component {
                 }<br />
                 <Button disabled={(!soldier.name || !soldier.rank || !soldier.sex || !soldier.email)} variant="contained" color="primary"
                     onClick={() => {
-
-                        let newSoldier = soldier;
-                        const id = soldier.id;
-                        delete newSoldier.id;
-                        this.props.editSoldier(soldier._id, newSoldier, this.props.history);
-                        console.log(soldier._id);
                         console.log(soldier);
+                        this.props.editSoldier(soldier._id, soldier, this.props.history);
+
                     }}>
                     <SaveIcon /> Save
                         </Button>
@@ -200,8 +189,8 @@ const mapDispatchToProps = (dispatch) => {
         editSoldier: (id, soldier, history) => {
             dispatch(editSoldier(id, soldier, history));
         },
-        getAvailableParent: () => {
-            dispatch(getAvailableParent());
+        getAvailableParent: (id) => {
+            dispatch(getAvailableParent(id));
         }
     };
 };

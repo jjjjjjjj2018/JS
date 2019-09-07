@@ -1,135 +1,204 @@
 import React from "react";
-import { withRouter } from 'react-router-dom';
 import { connect } from "react-redux";
-import { createSoldier } from "../../../redux/action-creators";
+import { createSoldier, getAll } from "../../../redux/action-creators";
 import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
+import ImageUploader from 'react-images-upload';
+import MenuItem from '@material-ui/core/MenuItem';
 
-const create = props => {
-    const { name,sex} = props.soldier;
-    return (
-        <Button disabled={!name||!sex} variant="contained" color="primary" onClick={() => {
-            props.history.push('/');
-        }}>
-            <SaveIcon /> Create
-        </Button>
-    );
-};
 
-const cancel = props => {
-    return (
-        <Button variant="contained"  onClick={() => { props.history.push('/') }} > Cancel</Button>
-    );
-};
 
-const WithHomeButton = withRouter(create);
-const WithCancelButton = withRouter(cancel);
+//(General, Colonel, Major, Captain, Lieutenant, Warrant Officer, Sergeant, Corporal,Specialist, Private)
+const ranks = [
+    { label: 'General', value: 'General', },
+    { label: 'Colonel', value: 'Colonel', },
+    { label: 'Major', value: 'Major', },
+    { label: 'Captain', value: 'Captain', },
+    { label: 'Lieutenant', value: 'Lieutenant', },
+    { label: 'Sergeant', value: 'Sergeant', },
+    { label: 'Private', value: 'Private', }
+];
 
 class Create extends React.Component {
+    componentDidMount() {
+        this.props.getAllSoldiers(0);
+        //this.props.getAllSoldiers();
+
+    }
+
     constructor(props) {
         super(props);
         this.state = {
-            user: {
-                firstName: '',
-                lastName: '',
-                gender: '',
-                age: 0,
-                password: '',
-                repeatPassword: ''
+            soldier: {
+                name: '',
+                sex: '',
+                parentId: '',
+                avatar: 'manimage.png',
+                rank: ''
             }
+
         }
     }
     handleChange = (event) => {
-        const { user } = this.state;
-        user[event.target.id] = event.target.value;
-        this.setState({ user });
+        const { soldier } = this.state;
+        soldier[event.target.id] = event.target.value;
+        this.setState({ soldier });
     }
-    changeAge = (event) => {
-        const { user } = this.state;
-        const age = parseInt(event.target.value);
-        user[event.target.id] = age;
-        this.setState({ user });
+    handleChangeRank = (event) => {
+        const { soldier } = this.state;
+        soldier.rank = event.target.value;
+        this.setState({ soldier });
     }
+    handleChangeParent = (event) => {
+        const { soldier } = this.state;
+        soldier.parentId = event.target.value;
+        this.setState({ soldier });
+        console.log(this.state.soldier.parentId);
+    }
+
+    onDrop = (picture) => {
+        const { soldier } = this.state;
+        soldier.avatar = picture[0].name;
+        this.setState({ soldier });
+
+    }
+
     render() {
-        const { state: { user } } = this;
+        const { state: { soldier }, props: { soldierList: { list, isLoading, error } } } = this;
+        let parentList = [];
+        let parent = {};
+        for (let i = 0; i < list.length; i++) {
+            parent = {
+                value: list[i].name,
+                label: list[i].name
+            }
+            parentList.push(parent);
+        }
+        // for (let oneSoldier of list) {
+        //     if (oneSoldier._id === soldier.id && soldier.parentId) {
+        //         parent = soldier.parentId
+        //     }
+        //     else {
+        //         parent = { name }
+        //     }
+        // }
         return (
+
             <div align='center'>
-                <h2>Create User</h2>
-                <form>
-                    <TextField
-                        required
-                        id="firstName"
-                        label="First Name"
-                        margin="normal"
-                        onChange={this.handleChange}
-                    />
-                    <br />
-                    <TextField
-                        required
-                        id="lastName"
-                        label="Second Name"
-                        margin="normal"
-                        onChange={this.handleChange}
-                    />
-                    <br />
-                    <TextField
-                        required
-                        id="gender"
-                        label="Sex"
-                        margin="normal"
-                        onChange={this.handleChange}
-                    />
-                    <br />
-                    <TextField
-                        required
-                        id="age"
-                        label="Age"
-                        margin="normal"
-                        onChange={this.changeAge}
-                    />
-                    <br /><br />
-                    < TextField
-                        required
-                        type='password'
-                        id="password"
-                        label="Password"
-                        margin="normal"
-                        onChange={this.handleChange}
-                    />
-                    <br /><br />
-                    <TextField
-                        required
-                        error={user.password !== user.repeatPassword}
-                        type='password'
-                        id="repeatPassword"
-                        label="Repeat Password"
-                        margin="normal"
-                        onChange={this.handleChange}
-                    />
-                </form>
-                <br />
-                <div onClick={() => {
-                    let newUser = user;
-                    delete newUser.repeatPassword;
-                    this.props.createUser(newUser);
-                }}>
-                    <WithHomeButton user={user} />
-                </div>
-                <br/>
-                <WithCancelButton />
-            </div>
+                <h2>Create New Soldier</h2>
+                {isLoading && <div>Loading ...</div>}
+                {!isLoading &&
+                    <form > {error && <div style={{ color: "red" }}>Oops...</div>}
+                        <div>
+                            {soldier.avatar &&
+                                <img width='200' height='200' alt='avatar' src={process.env.PUBLIC_URL + soldier.avatar} />
+                            }
+                            <ImageUploader
+                                withIcon={false}
+                                buttonText='Choose an image'
+                                label={null}
+                                onChange={this.onDrop}
+                                imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                                maxFileSize={5242880}
+                            />
+                        </div>
+                        {/*
+                        <input type = 'file' onChange = {this.onDrop}></input>
+                        <br/>*/}
+                        <TextField
+                            required
+                            id='name'
+                            label="Name"
+                            margin="normal"
+                            onChange={this.handleChange}
+                        />
+                        <br />
+                        <TextField
+                            required
+                            id="sex"
+                            label="Sex"
+                            margin="normal"
+                            onChange={this.handleChange}
+                        />
+                        <br />
+                        <TextField
+                            id="rank"
+                            value={soldier.rank}
+                            select
+                            label="rank"
+                            onChange={this.handleChangeRank}
+                            margin="normal"
+                        >
+                            {ranks.map(option => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField> <br />
+                        <TextField
+                            required
+                            id="email"
+                            label="Email"
+                            margin="normal"
+                            onChange={this.handleChange}
+                        /><br />
+                        <TextField
+                            select
+                            id="parent"
+                            label="Parent"
+                            value={soldier.parentId}
+                            margin="normal"
+                            onChange={this.handleChangeParent}
+                        >
+                            {parentList.map(option => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </form>
+                }<br />
+                <Button disabled={(!soldier.name || !soldier.rank || !soldier.sex || !soldier.email)} variant="contained" color="primary"
+                    onClick={() => {
+                        let newSoldier = soldier;
+
+                        for (parent of list) {
+                            if (newSoldier.parentId === parent.name) {
+                                newSoldier.parentId = parent._id;
+                            }
+                        }
+                        console.log(soldier);
+                        this.props.createSoldier(soldier, this.props.history);
+
+                    }}>
+                    <SaveIcon /> Save
+                        </Button>
+                <br /> <br />
+                <Button variant="contained" onClick={() => {
+                    this.props.history.push('/')
+                }}> Cancel</Button>
+
+            </div >
         );
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        soldierList: state.soldierList
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createSoldier: (soldier) => {
-            dispatch(createSoldier(soldier));
+        createSoldier: (soldier, history) => {
+            dispatch(createSoldier(soldier, history));
+        },
+        getAllSoldiers: (page) => {
+            dispatch(getAll(page));
         }
     };
 };
 
-export default connect(null, mapDispatchToProps)(Create);
+export default connect(mapStateToProps, mapDispatchToProps)(Create);

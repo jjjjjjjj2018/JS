@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getAll, deleteSoldier, getDirectChildren, sortAll, searchAll } from "../../redux/action-creators";
+import { getAll, deleteSoldier, getOne, getDirectChildren, sortAll, searchAll } from "../../redux/action-creators";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
@@ -30,7 +30,7 @@ const headRows = [
     { id: 'sex', numeric: false, label: 'Sex' },
     { id: 'rank', numeric: true, label: 'Rank' },
     // { id: 'phone', numeric: true, lable: 'Phone' },
-    //{ id: 'email', numeric: false, label: 'Email' },
+    { id: 'email', numeric: false, label: 'Email' },
     //{ id: 'startDate', numeric: true, label: 'Start Date' },
 
 
@@ -66,7 +66,6 @@ class EnhancedTableHead extends React.Component {
                             </TableSortLabel>
                         </TableCell>
                     ))}
-                    <TableCell align='center'>Email</TableCell>
                     <TableCell align='center'>Superior</TableCell>
                     <TableCell align='center'># of D.S.</TableCell>
 
@@ -291,14 +290,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getAllSoldiers: () => {
-            dispatch(getAll());
+        getAllSoldiers: (page) => {
+            dispatch(getAll(page));
         },
         deleteSoldier: (id) => {
             dispatch(deleteSoldier(id));
         },
         getChildren: (id) => {
             dispatch(getDirectChildren(id))
+        },
+        getOneSoldier: (id) => {
+            dispatch(getOne(id))
         },
         sortAllSoldiers: (order, orderBy) => {
             dispatch(sortAll(order, orderBy))

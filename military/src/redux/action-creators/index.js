@@ -58,6 +58,27 @@ function searchAllFail(error) {
 }
 
 
+//get one soldier action
+function getOneStart() {
+  return {
+    type: 'GET_ONE_START',
+  };
+}
+
+function getOneSuccess(response) {
+  return {
+    type: 'GET_ONE_SUCCESS',
+    data: response.data,
+  };
+}
+
+function getOneFail(error) {
+  return {
+    type: 'GET_ONE_FAIL',
+    error,
+  };
+}
+
 //get possible parent of one soldier
 function getAvailableParentStart() {
   return {
@@ -201,7 +222,19 @@ export function sortAll(order, orderBy) {
   };
 }
 
-
+export function getOne(id) {
+  return (dispatch) => {
+    dispatch(getOneStart());
+    axios
+      .get(`http://localhost:8080/soldiers/${id}`)
+      .then(response => {
+        dispatch(getOneSuccess(response));
+      })
+      .catch(err => {
+        dispatch(getOneFail(err));
+      });
+  };
+}
 
 export function getAvailableParent(id) {
   return (dispatch) => {
@@ -236,19 +269,22 @@ export function deleteSoldier(id) {
     dispatch(deleteOneStart());
     axios
       .delete(`http://localhost:8080/soldiers/delete/${id}`)
-      .then(dispatch(deleteOneSuccess()))
+
+      .then(dispatch(deleteOneSuccess()), dispatch(getAll(0)))
+
       .catch(err => {
         dispatch(deleteOneFail(err));
       });
   };
 }
 
-export function createSoldier(soldier) {
+export function createSoldier(soldier, history) {
   return (dispatch) => {
     dispatch(createOneStart());
     axios
       .post('http://localhost:8080/soliers/create', soldier)
       .then(dispatch(createOneSuccess()))
+      .then(history.push('/'))
       .catch(err => {
         dispatch(createOneFail(err));
       });
@@ -260,9 +296,8 @@ export function editSoldier(id, soldier, history) {
     dispatch(editOneStart());
     axios
       .post(`http://localhost:8080/soldiers/edit/${id}`, soldier)
-      .then(
-        console.log(id),
-        dispatch(editOneSuccess()), history.push('/'))
+      .then(dispatch(editOneSuccess()))
+      .then(history.push('/'))
       .catch(err => {
         dispatch(editOneFail(err));
       });
