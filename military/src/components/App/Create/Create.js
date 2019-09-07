@@ -61,6 +61,7 @@ class Create extends React.Component {
         const { soldier } = this.state;
         soldier.avatar = picture[0].name;
         this.setState({ soldier });
+        console.log(this.state.soldier.avatar);
 
     }
 

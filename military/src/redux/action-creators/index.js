@@ -182,9 +182,7 @@ export function getAll(page) {
     dispatch(getAllStart());
     axios
       .get(`http://localhost:8080/soldiers/${page}`)
-      .then(response => {
-        dispatch(getAllSuccess(response));
-      })
+      .then(response => { dispatch(getAllSuccess(response)); })
       .catch(err => {
         dispatch(getAllFail(err));
       });
@@ -197,9 +195,7 @@ export function searchAll(search) {
     dispatch(searchAllStart());
     axios
       .get(`http://localhost:8080/soldiers/search/${search}`)
-      .then(response => {
-        dispatch(searchAllSuccess(response));
-      })
+      .then(response => { dispatch(searchAllSuccess(response)); })
       .catch(err => {
         dispatch(searchAllFail(err));
       });
@@ -213,9 +209,7 @@ export function sortAll(order, orderBy) {
     sort = orderBy + order;
     axios
       .get(`http://localhost:8080/soldiers/sort/${sort}`)
-      .then(response => {
-        dispatch(sortAllSuccess(response));
-      })
+      .then(response => { dispatch(sortAllSuccess(response)); })
       .catch(err => {
         dispatch(sortAllFail(err));
       });
@@ -226,10 +220,8 @@ export function getOne(id) {
   return (dispatch) => {
     dispatch(getOneStart());
     axios
-      .get(`http://localhost:8080/soldiers/${id}`)
-      .then(response => {
-        dispatch(getOneSuccess(response));
-      })
+      .get(`http://localhost:8080/soldiers/one/${id}`)
+      .then(response => { dispatch(getOneSuccess(response)); })
       .catch(err => {
         dispatch(getOneFail(err));
       });
@@ -270,7 +262,7 @@ export function deleteSoldier(id) {
     axios
       .delete(`http://localhost:8080/soldiers/delete/${id}`)
 
-      .then(dispatch(deleteOneSuccess()), dispatch(getAll(0)))
+      .then(() => { dispatch(deleteOneSuccess()); dispatch(getAll(0)) })
 
       .catch(err => {
         dispatch(deleteOneFail(err));
@@ -282,9 +274,9 @@ export function createSoldier(soldier, history) {
   return (dispatch) => {
     dispatch(createOneStart());
     axios
-      .post('http://localhost:8080/soliers/create', soldier)
-      .then(dispatch(createOneSuccess()))
-      .then(history.push('/'))
+      .post('http://localhost:8080/soldiers/create', soldier)
+      .then(() => dispatch(createOneSuccess()))
+      .then(() => history.push('/'))
       .catch(err => {
         dispatch(createOneFail(err));
       });
@@ -296,7 +288,7 @@ export function editSoldier(id, soldier, history) {
     dispatch(editOneStart());
     axios
       .post(`http://localhost:8080/soldiers/edit/${id}`, soldier)
-      .then(dispatch(editOneSuccess()))
+      .then(() => dispatch(editOneSuccess()))
       .then(history.push('/'))
       .catch(err => {
         dispatch(editOneFail(err));

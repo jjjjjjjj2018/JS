@@ -38,7 +38,7 @@ router.route('/sort/:sort').get((req, res) => {
 });
 
 //get one user by id
-router.route('/:id').get((req, res) => {
+router.route('/one/:id').get((req, res) => {
   Soldier.findById(req.params.id).populate('parendId', 'name')
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
@@ -47,8 +47,12 @@ router.route('/:id').get((req, res) => {
 
 //get possible parent of one soldier
 router.route('/:id/availableParent').get((req, res) => {
-  Soldier.find({ "path": { "$not": { "$all": [req.params.id] } } })
-    .then(soldiers => res.json(soldiers))
+  Soldier.find()
+    .then(soldiers => {
+      for (soldier of soldiers){
+        if (soldier.path)
+      }
+    })
     .catch(err => res.status(400).json('Error: ' + err));
 });
 

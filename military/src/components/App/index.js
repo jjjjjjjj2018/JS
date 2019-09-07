@@ -134,8 +134,7 @@ class App extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.state.order !== prevState.order || this.state.orderBy !== prevState.orderBy)
             this.props.sortAllSoldiers(this.state.order, this.state.orderBy);
-        if (this.props.soldierList.isDeleting !== prevProps.soldierList.isDeleting)
-            this.props.getAllSoldiers();
+
 
     }
     constructor(props) {
@@ -189,7 +188,7 @@ class App extends React.Component {
         this.props.getChildren(id);
     }
     fetchSoldiers = () => {
-        this.props.getAllSoldiers(this.state.page);
+        this.props.getAllSoldiers(this.state.page + 1);
         this.setState({ page: +1 });
     }
     render() {
