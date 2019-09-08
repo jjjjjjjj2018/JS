@@ -19,6 +19,25 @@ function getAllFail(error) {
   };
 }
 
+//get next apge action
+function getPageStart() {
+  return {
+    type: 'GET_PAGE_START',
+  };
+}
+function getPageSuccess(response) {
+  return {
+    type: 'GET_PAGE_SUCCESS',
+    data: response.data,
+  };
+}
+function getPageFail(error) {
+  return {
+    type: 'GET_PAGE_FAIL',
+    error,
+  };
+}
+
 //sort all soldiers
 function sortAllStart() {
   return {
@@ -175,19 +194,26 @@ function editOneFail(error) {
   };
 }
 
-
-
-export function getAll(page) {
+export function getAll() {
   return (dispatch) => {
     dispatch(getAllStart());
     axios
-      .get(`http://localhost:8080/soldiers/${page}`)
+      .get(`http://localhost:8080/soldiers`)
       .then(response => { dispatch(getAllSuccess(response)); })
-      .catch(err => {
-        dispatch(getAllFail(err));
-      });
+      .catch(err => { dispatch(getAllFail(err)); });
   };
 }
+
+export function getPage(page) {
+  return (dispatch) => {
+    dispatch(getPageStart());
+    axios
+      .get(`http://localhost:8080/soldiers/${page}`)
+      .then(response => { dispatch(getPageSuccess(response)); })
+      .catch(err => { dispatch(getPageFail(err)); });
+  };
+}
+
 
 
 export function searchAll(search) {
@@ -196,9 +222,7 @@ export function searchAll(search) {
     axios
       .get(`http://localhost:8080/soldiers/search/${search}`)
       .then(response => { dispatch(searchAllSuccess(response)); })
-      .catch(err => {
-        dispatch(searchAllFail(err));
-      });
+      .catch(err => { dispatch(searchAllFail(err)); });
   };
 }
 
@@ -210,9 +234,7 @@ export function sortAll(order, orderBy) {
     axios
       .get(`http://localhost:8080/soldiers/sort/${sort}`)
       .then(response => { dispatch(sortAllSuccess(response)); })
-      .catch(err => {
-        dispatch(sortAllFail(err));
-      });
+      .catch(err => { dispatch(sortAllFail(err)); });
   };
 }
 
@@ -222,9 +244,7 @@ export function getOne(id) {
     axios
       .get(`http://localhost:8080/soldiers/one/${id}`)
       .then(response => { dispatch(getOneSuccess(response)); })
-      .catch(err => {
-        dispatch(getOneFail(err));
-      });
+      .catch(err => { dispatch(getOneFail(err)); });
   };
 }
 
@@ -233,12 +253,8 @@ export function getAvailableParent(id) {
     dispatch(getAvailableParentStart());
     axios
       .get(`http://localhost:8080/soldiers/${id}/availableParent`)
-      .then(response => {
-        dispatch(getAvailableParentSuccess(response));
-      })
-      .catch(err => {
-        dispatch(getAvailableParentFail(err));
-      });
+      .then(response => { dispatch(getAvailableParentSuccess(response)); })
+      .catch(err => { dispatch(getAvailableParentFail(err)); });
   };
 }
 
@@ -247,12 +263,8 @@ export function getDirectChildren(id) {
     dispatch(getDirectChildrenStart());
     axios
       .get(`http://localhost:8080/soldiers/${id}/dirchildren`)
-      .then(response => {
-        dispatch(getDirectChildrenSuccess(response));
-      })
-      .catch(err => {
-        dispatch(getDirectChildrenFail(err));
-      });
+      .then(response => { dispatch(getDirectChildrenSuccess(response)); })
+      .catch(err => { dispatch(getDirectChildrenFail(err)); });
   };
 }
 
@@ -261,12 +273,8 @@ export function deleteSoldier(id) {
     dispatch(deleteOneStart());
     axios
       .delete(`http://localhost:8080/soldiers/delete/${id}`)
-
       .then(() => { dispatch(deleteOneSuccess()); dispatch(getAll(0)) })
-
-      .catch(err => {
-        dispatch(deleteOneFail(err));
-      });
+      .catch(err => { dispatch(deleteOneFail(err)); });
   };
 }
 
@@ -275,11 +283,9 @@ export function createSoldier(soldier, history) {
     dispatch(createOneStart());
     axios
       .post('http://localhost:8080/soldiers/create', soldier)
-      .then(() => dispatch(createOneSuccess()))
+      .then(() => { dispatch(createOneSuccess()); dispatch(getAll(0)) })
       .then(() => history.push('/'))
-      .catch(err => {
-        dispatch(createOneFail(err));
-      });
+      .catch(err => { dispatch(createOneFail(err)); });
   };
 }
 
@@ -288,11 +294,9 @@ export function editSoldier(id, soldier, history) {
     dispatch(editOneStart());
     axios
       .post(`http://localhost:8080/soldiers/edit/${id}`, soldier)
-      .then(() => dispatch(editOneSuccess()))
+      .then(() => { dispatch(editOneSuccess()); dispatch(getAll()) })
       .then(history.push('/'))
-      .catch(err => {
-        dispatch(editOneFail(err));
-      });
+      .catch(err => { dispatch(editOneFail(err)); });
   };
 
 }

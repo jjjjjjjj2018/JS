@@ -3,8 +3,8 @@ let Soldier = require('../model/soldier.model');
 const router = express.Router();
 
 //get all userss
-router.route('/:page').get((req, res) => {
-  Soldier.find().populate('parentId', 'name')/*.skip(req.params.page * 3).limit(3)*/
+router.route('/').get((req, res) => {
+  Soldier.find().populate('parentId', 'name')
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -12,6 +12,13 @@ router.route('/:page').get((req, res) => {
 //backend search
 router.route('/search/:search').get((req, res) => {
   Soldier.find({ $text: { $search: `${req.params.search}` } }).populate('parentId', 'name')
+    .then(soldiers => res.json(soldiers))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+//get next page
+router.route('/:page').get((req, res) => {
+  Soldier.find().populate('parentId', 'name').skip(req.params.page * 3).limit(3)
     .then(soldiers => res.json(soldiers))
     .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -47,11 +54,13 @@ router.route('/one/:id').get((req, res) => {
 
 //get possible parent of one soldier
 router.route('/:id/availableParent').get((req, res) => {
-  Soldier.find()
+  Soldier.find({ _id: { $ne: req.params.id } })
     .then(soldiers => {
-      for (soldier of soldiers){
-        if (soldier.path)
-      }
+      const parents = soldiers.filter((value) => {
+        return !value.path.includes(req.params.id);
+      });
+
+      res.json(parents);
     })
     .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -95,12 +104,11 @@ router.route('/create').post((req, res) => {
 
 //edit one user by id
 router.route('/edit/:id').post((req, res) => {
-  Soldier.findById(req.params.id).populate('parentId', '_id')
+  Soldier.findById(req.params.id)
     .then(newSoldier => {
-      console.log(newSoldier);
-      if (newSoldier.parentId && parentId._id !== req.body.parentId._id) {
-        console.log(parentId._id);
-        Soldier.findById(parentId._id)
+      if (newSoldier.parentId && newSoldier.parentId.toString() !== req.body.parentId) {
+
+        Soldier.findById(newSoldier.parentId.toString())
           .then(
             parent => {
               parent.numOfChildren--;
@@ -115,15 +123,17 @@ router.route('/edit/:id').post((req, res) => {
       newSoldier.sex = req.body.sex;
       newSoldier.rank = req.body.rank;
       newSoldier.email = req.body.email;
-      if (req.body.parentId && req.body.parnetId._id !== parentId._id) {
-        Soldier.findById(req.body.parentId._id)
+      newSoldier.numOfChildren = req.body.numOfChildren;
+      if (req.body.parentId && req.body.parentId !== newSoldier.parentId.toString()) {
+        Soldier.findById(req.body.parentId)
           .then(soldier => {
             soldier.appendChild(newSoldier);
+            console.log(req.body.parentId + ' ' + newSoldier.parentId.toString())
             soldier.numOfChildren++;
             soldier.save();
-          })
+          });
+        newSoldier.parentId = req.body.parentId;
       }
-      console.log(newSoldier);
       newSoldier.save()
         .then(() => res.json('Soldier updated!'))
         .catch(err => res.status(400).json('Error: ' + err));
@@ -136,7 +146,7 @@ router.route('/delete/:id').delete((req, res) => {
   Soldier.findById(req.params.id)
     .then(soldier => {
       if (soldier.parentId) {
-        Soldier.findById(soldier.parentId._id)
+        Soldier.findById(soldier.parentId.toString())
           .then(parent => {
             parent.numOfChildren--;
             parent.save();
@@ -147,7 +157,7 @@ router.route('/delete/:id').delete((req, res) => {
           Soldier.find({ parentId: req.params.id })
             .then(child => {
               child.parentId = null;
-              children.path = null;
+              child.path = null;
               child.save();
             })
         } else if (soldier.numOfChildren > 1) {
@@ -155,7 +165,7 @@ router.route('/delete/:id').delete((req, res) => {
             .then(children => {
               for (child of children) {
                 child.parentId = null;
-                children.path = null;
+                child.path = null;
                 child.save();
               }
             })

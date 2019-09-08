@@ -15,10 +15,28 @@ const soldierList = (state = initState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                list: initState.list.concat(action.data),
+                list: action.data,
                 error: null
             };
         case "GET_ALL_FAIL":
+            return {
+                ...state,
+                isLoading: false,
+                error: action.err
+            };
+        case "GET_PAGE_START":
+            return {
+                ...state,
+                isLoading: true
+            };
+        case "GET_PAGE_SUCCESS":
+            return {
+                ...state,
+                isLoading: false,
+                list: initState.list.concat(action.data),
+                error: null
+            };
+        case "GET_PAGE_FAIL":
             return {
                 ...state,
                 isLoading: false,

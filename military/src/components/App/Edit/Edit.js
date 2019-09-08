@@ -25,7 +25,15 @@ class Edit extends React.Component {
         this.props.getAvailableParent(this.props.location.state.soldier._id);
         //this.props.getAllSoldiers();
         this.setState({
-            soldier: this.props.location.state.soldier
+            soldier: {
+                _id: this.props.location.state.soldier._id,
+                name: this.props.location.state.soldier.name,
+                parentId: this.props.location.state.soldier.parentId.name,
+                sex: this.props.location.state.soldier.sex,
+                avatar: this.props.location.state.soldier.avatar,
+                rank: this.props.location.state.soldier.rank,
+                email: this.props.location.state.soldier.email
+            }
         });
     }
 
@@ -68,21 +76,15 @@ class Edit extends React.Component {
 
     render() {
         const { state: { soldier }, props: { soldierList: { list, isLoading, error } } } = this;
-
-        let parent
-        if (soldier.parentId) {
-            parent = soldier.parentId
-        } else {
-            parent = { _id: ' ', name: ' ' }
+        let parentList = [];
+        let parent = {};
+        for (let i = 0; i < list.length; i++) {
+            parent = {
+                value: list[i].name,
+                label: list[i].name
+            }
+            parentList.push(parent);
         }
-        // for (let oneSoldier of list) {
-        //     if (oneSoldier._id === soldier.id && soldier.parentId) {
-        //         parent = soldier.parentId
-        //     }
-        //     else {
-        //         parent = { name }
-        //     }
-        // }
         return (
 
             <div align='center'>
@@ -148,13 +150,13 @@ class Edit extends React.Component {
                             select
                             id="parent"
                             label="Parent"
-                            value={parent.name}
+                            value={soldier.parentId}
                             margin="normal"
                             onChange={this.handleChangeParent}
                         >
-                            {list.map(option => (
-                                <MenuItem key={option} value={option}>
-                                    {option.name}
+                            {parentList.map(option => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -162,8 +164,14 @@ class Edit extends React.Component {
                 }<br />
                 <Button disabled={(!soldier.name || !soldier.rank || !soldier.sex || !soldier.email)} variant="contained" color="primary"
                     onClick={() => {
-                        console.log(soldier);
-                        this.props.editSoldier(soldier._id, soldier, this.props.history);
+                        let newSoldier = soldier
+                        for (parent of list) {
+                            if (newSoldier.parentId === parent.name) {
+                                newSoldier.parentId = parent._id;
+                            }
+                        }
+                        console.log(newSoldier);
+                        this.props.editSoldier(newSoldier._id, newSoldier, this.props.history);
 
                     }}>
                     <SaveIcon /> Save

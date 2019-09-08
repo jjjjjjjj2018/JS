@@ -22,7 +22,7 @@ const ranks = [
 
 class Create extends React.Component {
     componentDidMount() {
-        this.props.getAllSoldiers(0);
+        this.props.getAllSoldiers();
         //this.props.getAllSoldiers();
 
     }
@@ -170,7 +170,7 @@ class Create extends React.Component {
                             }
                         }
                         console.log(soldier);
-                        this.props.createSoldier(soldier, this.props.history);
+                        this.props.createSoldier(newSoldier, this.props.history);
 
                     }}>
                     <SaveIcon /> Save
@@ -196,8 +196,8 @@ const mapDispatchToProps = (dispatch) => {
         createSoldier: (soldier, history) => {
             dispatch(createSoldier(soldier, history));
         },
-        getAllSoldiers: (page) => {
-            dispatch(getAll(page));
+        getAllSoldiers: () => {
+            dispatch(getAll());
         }
     };
 };

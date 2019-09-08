@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getAll, deleteSoldier, getOne, getDirectChildren, sortAll, searchAll } from "../../redux/action-creators";
+import {  deleteSoldier, getPage,getOne, getDirectChildren, sortAll, searchAll } from "../../redux/action-creators";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
@@ -129,7 +129,7 @@ const WithCreateButton = withRouter(toCreate);
 
 class App extends React.Component {
     componentDidMount() {
-        this.props.getAllSoldiers(this.state.page);
+        this.props.getPage(this.state.page);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.order !== prevState.order || this.state.orderBy !== prevState.orderBy)
@@ -289,8 +289,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getAllSoldiers: (page) => {
-            dispatch(getAll(page));
+        getPage: (page) => {
+            dispatch(getPage(page));
         },
         deleteSoldier: (id) => {
             dispatch(deleteSoldier(id));
