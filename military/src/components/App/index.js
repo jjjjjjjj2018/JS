@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import {  deleteSoldier, getPage,getOne, getDirectChildren, sortAll, searchAll } from "../../redux/action-creators";
+import { deleteSoldier, getSortPage, getOne, getDirectChildren, searchAll } from "../../redux/action-creators";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
@@ -20,7 +20,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Button from '@material-ui/core/Button';
-//import InfiniteScroll from 'redux-infinite-scroll';
+import InfiniteScroll from 'react-infinite-scroller';
 
 
 const headRows = [
@@ -129,13 +129,11 @@ const WithCreateButton = withRouter(toCreate);
 
 class App extends React.Component {
     componentDidMount() {
-        this.props.getPage(this.state.page);
+        this.props.getSortPage(this.state.order, this.state.orderBy, this.state.page);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.order !== prevState.order || this.state.orderBy !== prevState.orderBy)
-            this.props.sortAllSoldiers(this.state.order, this.state.orderBy);
-
-
+            this.props.getSortPage(this.state.order, this.state.orderBy, 0);
     }
     constructor(props) {
         super(props);
@@ -166,7 +164,6 @@ class App extends React.Component {
         setTimeout(() => {
             this.props.searchAllSoldiers(this.state.item);
         }, 700);
-
     }
 
 
@@ -187,8 +184,8 @@ class App extends React.Component {
     showChildren = (id) => {
         this.props.getChildren(id);
     }
-    fetchSoldiers = () => {
-        this.props.getAllSoldiers(this.state.page + 1);
+    loadPage = () => {
+        this.props.getSortPage(this.state.order, this.state.orderBy, this.state.page + 1);
         this.setState({ page: +1 });
     }
     render() {
@@ -205,9 +202,8 @@ class App extends React.Component {
         }
 
         return (
-            <div className={classes.root}><Typography variant="h4" id="tableTitle">
-                US Amary Personal Registry
-                                    </Typography>
+            <div className={classes.root}>
+                <Typography variant="h4" id="tableTitle">US Amary Personal Registry</Typography>
                 <br />
                 <TextField right='10' type='text' value={item} onChange={this.handleSearch} placeholder='search' />
                 <IconButton onClick={() => this.componentDidMount()}><RefreshIcon /></IconButton>
@@ -217,61 +213,63 @@ class App extends React.Component {
                     <div> {error && <div style={{ color: "red" }}>Oops...</div>}
                         <Paper className={classes.paper}>
                             <div className={classes.tableWrapper}>
-                                <Table
-                                    className={classes.table}
-                                    aria-labelledby="tableTitle">
-                                    <EnhancedTableHead
-                                        classes={classes}
-                                        order={this.state.order}
-                                        orderBy={this.state.orderBy}
-                                        onRequestSort={this.handleRequestSort}
-                                    />
-                                    <TableBody>
-                                        {/* <InfiniteScroll
-                                            loadMore={this.fetchSoldiers}
-                                        > */}
-                                        {list.map(row => {
-                                            return (
-                                                <TableRow key={row._id} hover tabIndex={-1}>
-                                                    <TableCell align='center'>
-                                                        <IconButton aria-label="edit"><WithEditButton
-                                                            soldier={row}
-                                                        /></IconButton>
+                                <InfiniteScroll
+                                    pageStart={1}
+                                    loadMore={() => this.loadPage}
+                                    hasMore={true}
+                                >
+                                    <Table
+                                        className={classes.table}
+                                        aria-labelledby="tableTitle">
+                                        <EnhancedTableHead
+                                            classes={classes}
+                                            order={this.state.order}
+                                            orderBy={this.state.orderBy}
+                                            onRequestSort={this.handleRequestSort}
+                                        />
+                                        <TableBody>
 
-                                                    </TableCell>
-                                                    <TableCell align='center'><IconButton aria-label="delete"
-                                                        onClick={() => this.handleDelete(row._id)}>
-                                                        <DeleteIcon /></IconButton></TableCell>
-                                                    {!row.avatar && <TableCell />}
-                                                    {row.avatar &&
-                                                        <TableCell align="center"><img width='20' height='20' src={process.env.PUBLIC_URL + row.avatar} alt='avatar' /></TableCell>
-                                                    }
-                                                    <TableCell align="center">{row.name}</TableCell>
-                                                    <TableCell align="center">{row.sex}</TableCell>
-                                                    <TableCell>{row.rank}</TableCell>
-                                                    <TableCell align='center'><Button onClick={() => window.location.href = `mailto:${row.email}`}> {row.email}</Button></TableCell>
-                                                    {!row.parentId && <TableCell />}
-                                                    {row.parentId &&
-                                                        <TableCell align="center" ><Button onClick={() => this.showParent(row.parentId._id)}>
-                                                            {row.parentId.name}</Button></TableCell>
-                                                    }
-                                                    {row.numOfChildren === 0 && <TableCell />}
-                                                    {row.numOfChildren !== 0 &&
-                                                        <TableCell> <Button onClick={() => this.showChildren(row._id)}>{row.numOfChildren} </Button></TableCell>
-                                                    }
-                                                    {/* <TableCell align="left">{row.rank}</TableCell>
+                                            {list.map(row => {
+                                                return (
+                                                    <TableRow key={row._id} hover tabIndex={-1}>
+                                                        <TableCell align='center'>
+                                                            <IconButton aria-label="edit"><WithEditButton
+                                                                soldier={row}
+                                                            /></IconButton>
+
+                                                        </TableCell>
+                                                        <TableCell align='center'><IconButton aria-label="delete"
+                                                            onClick={() => this.handleDelete(row._id)}>
+                                                            <DeleteIcon /></IconButton></TableCell>
+                                                        {!row.avatar && <TableCell />}
+                                                        {row.avatar &&
+                                                            <TableCell align="center"><img width='20' height='20' src={process.env.PUBLIC_URL + row.avatar} alt='avatar' /></TableCell>
+                                                        }
+                                                        <TableCell align="center">{row.name}</TableCell>
+                                                        <TableCell align="center">{row.sex}</TableCell>
+                                                        <TableCell align="center">{row.rank}</TableCell>
+                                                        <TableCell align='center'><Button onClick={() => window.location.href = `mailto:${row.email}`}> {row.email}</Button></TableCell>
+                                                        {!row.parentId && <TableCell align="center" />}
+                                                        {row.parentId &&
+                                                            <TableCell align="center" ><Button onClick={() => this.showParent(row.parentId._id)}>
+                                                                {row.parentId.name}</Button></TableCell>
+                                                        }
+                                                        {row.numOfChildren === 0 && <TableCell align="center" />}
+                                                        {row.numOfChildren !== 0 &&
+                                                            <TableCell align="center"> <Button onClick={() => this.showChildren(row._id)}>{row.numOfChildren} </Button></TableCell>
+                                                        }
+                                                        {/* <TableCell align="left">{row.rank}</TableCell>
                                                                 <TableCell align="left">{row.startDate}</TableCell>
                                                                 <TableCell align="left">{row.phone}</TableCell>
                                                                 <TableCell align="left">{row.email}</TableCell>
                                                                
                                                                 <TableCell align="left">{row.numOfChildren}</TableCell> */}
-                                                </TableRow>
-                                            );
-                                        })}
-                                        {/* </InfiniteScroll> */}
-                                    </TableBody>
-                                    {/* </InfiniteScroll> */}
-                                </Table>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </InfiniteScroll>
                             </div>
                         </Paper>
 
@@ -289,8 +287,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getPage: (page) => {
-            dispatch(getPage(page));
+        getSortPage: (order, orderBy, page) => {
+            dispatch(getSortPage(order, orderBy, page));
         },
         deleteSoldier: (id) => {
             dispatch(deleteSoldier(id));
@@ -300,9 +298,6 @@ const mapDispatchToProps = (dispatch) => {
         },
         getOneSoldier: (id) => {
             dispatch(getOne(id))
-        },
-        sortAllSoldiers: (order, orderBy) => {
-            dispatch(sortAll(order, orderBy))
         },
         searchAllSoldiers: (search) => {
             dispatch(searchAll(search))

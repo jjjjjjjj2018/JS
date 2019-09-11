@@ -24,17 +24,29 @@ class Edit extends React.Component {
     componentDidMount() {
         this.props.getAvailableParent(this.props.location.state.soldier._id);
         //this.props.getAllSoldiers();
-        this.setState({
-            soldier: {
-                _id: this.props.location.state.soldier._id,
-                name: this.props.location.state.soldier.name,
-                parentId: this.props.location.state.soldier.parentId.name,
-                sex: this.props.location.state.soldier.sex,
-                avatar: this.props.location.state.soldier.avatar,
-                rank: this.props.location.state.soldier.rank,
-                email: this.props.location.state.soldier.email
-            }
-        });
+        if (this.props.location.state.soldier.parentId) {
+            this.setState({
+                soldier: {
+                    _id: this.props.location.state.soldier._id,
+                    name: this.props.location.state.soldier.name,
+                    parentId: this.props.location.state.soldier.parentId.name,
+                    sex: this.props.location.state.soldier.sex,
+                    avatar: this.props.location.state.soldier.avatar,
+                    rank: this.props.location.state.soldier.rank,
+                    email: this.props.location.state.soldier.email
+                }
+            });
+        } else
+            this.setState({
+                soldier: {
+                    _id: this.props.location.state.soldier._id,
+                    name: this.props.location.state.soldier.name,
+                    sex: this.props.location.state.soldier.sex,
+                    avatar: this.props.location.state.soldier.avatar,
+                    rank: this.props.location.state.soldier.rank,
+                    email: this.props.location.state.soldier.email
+                }
+            });
     }
 
 

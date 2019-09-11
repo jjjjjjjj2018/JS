@@ -19,40 +19,21 @@ function getAllFail(error) {
   };
 }
 
-//get next apge action
-function getPageStart() {
+//get sorted page soldiers
+function getSortPageStart() {
   return {
-    type: 'GET_PAGE_START',
+    type: 'SORT_PAGE_START',
   };
 }
-function getPageSuccess(response) {
+function getSortPageSuccess(response) {
   return {
-    type: 'GET_PAGE_SUCCESS',
+    type: 'SORT_PAGE_SUCCESS',
     data: response.data,
   };
 }
-function getPageFail(error) {
+function getSortPageFail(error) {
   return {
-    type: 'GET_PAGE_FAIL',
-    error,
-  };
-}
-
-//sort all soldiers
-function sortAllStart() {
-  return {
-    type: 'SORT_ALL_START',
-  };
-}
-function sortAllSuccess(response) {
-  return {
-    type: 'SORT_ALL_SUCCESS',
-    data: response.data,
-  };
-}
-function sortAllFail(error) {
-  return {
-    type: 'SORT_ALL_FAIL',
+    type: 'SORT_PAGE_FAIL',
     error,
   };
 }
@@ -204,37 +185,36 @@ export function getAll() {
   };
 }
 
-export function getPage(page) {
-  return (dispatch) => {
-    dispatch(getPageStart());
-    axios
-      .get(`http://localhost:8080/soldiers/${page}`)
-      .then(response => { dispatch(getPageSuccess(response)); })
-      .catch(err => { dispatch(getPageFail(err)); });
-  };
-}
-
-
-
 export function searchAll(search) {
   return (dispatch) => {
     dispatch(searchAllStart());
-    axios
-      .get(`http://localhost:8080/soldiers/search/${search}`)
-      .then(response => { dispatch(searchAllSuccess(response)); })
-      .catch(err => { dispatch(searchAllFail(err)); });
+    if (search)
+      axios
+        .get(`http://localhost:8080/soldiers/search/${search}`)
+        .then(response => { dispatch(searchAllSuccess(response)); })
+        .catch(err => { dispatch(searchAllFail(err)); });
+    else {
+      axios
+        .get(`http://localhost:8080/soldiers/sort/_iddesc/page/0`)
+        .then(response => { dispatch(getSortPageSuccess(response)); })
+        .catch(err => { dispatch(getSortPageFail(err)); });
+    }
   };
 }
 
-export function sortAll(order, orderBy) {
+
+export function getSortPage(order, orderBy, page) {
   return (dispatch) => {
     let sort = '';
-    dispatch(sortAllStart());
-    sort = orderBy + order;
+    dispatch(getSortPageStart());
+    if (orderBy === null)
+      sort = 'none';
+    else
+      sort = orderBy + order;
     axios
-      .get(`http://localhost:8080/soldiers/sort/${sort}`)
-      .then(response => { dispatch(sortAllSuccess(response)); })
-      .catch(err => { dispatch(sortAllFail(err)); });
+      .get(`http://localhost:8080/soldiers/sort/${sort}/page/${page}`)
+      .then(response => { dispatch(getSortPageSuccess(response)); })
+      .catch(err => { dispatch(getSortPageFail(err)); });
   };
 }
 
@@ -273,7 +253,7 @@ export function deleteSoldier(id) {
     dispatch(deleteOneStart());
     axios
       .delete(`http://localhost:8080/soldiers/delete/${id}`)
-      .then(() => { dispatch(deleteOneSuccess()); dispatch(getAll(0)) })
+      .then(() => { dispatch(deleteOneSuccess()); dispatch(getSortPage(null, null, 0)) })
       .catch(err => { dispatch(deleteOneFail(err)); });
   };
 }
@@ -283,7 +263,7 @@ export function createSoldier(soldier, history) {
     dispatch(createOneStart());
     axios
       .post('http://localhost:8080/soldiers/create', soldier)
-      .then(() => { dispatch(createOneSuccess()); dispatch(getAll(0)) })
+      .then(() => { dispatch(createOneSuccess()); dispatch(getSortPage(null, null, 0)) })
       .then(() => history.push('/'))
       .catch(err => { dispatch(createOneFail(err)); });
   };
@@ -294,7 +274,7 @@ export function editSoldier(id, soldier, history) {
     dispatch(editOneStart());
     axios
       .post(`http://localhost:8080/soldiers/edit/${id}`, soldier)
-      .then(() => { dispatch(editOneSuccess()); dispatch(getAll()) })
+      .then(() => { dispatch(editOneSuccess()); dispatch(getSortPage(null, null, 0)) })
       .then(history.push('/'))
       .catch(err => { dispatch(editOneFail(err)); });
   };

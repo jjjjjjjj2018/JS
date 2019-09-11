@@ -24,37 +24,19 @@ const soldierList = (state = initState, action) => {
                 isLoading: false,
                 error: action.err
             };
-        case "GET_PAGE_START":
+        case "SORT_PAGE_START":
             return {
                 ...state,
                 isLoading: true
             };
-        case "GET_PAGE_SUCCESS":
+        case "SORT_PAGE_SUCCESS":
             return {
                 ...state,
                 isLoading: false,
                 list: initState.list.concat(action.data),
                 error: null
             };
-        case "GET_PAGE_FAIL":
-            return {
-                ...state,
-                isLoading: false,
-                error: action.err
-            };
-        case "SORT_ALL_START":
-            return {
-                ...state,
-                isLoading: true
-            };
-        case "SORT_ALL_SUCCESS":
-            return {
-                ...state,
-                isLoading: false,
-                list: action.data,
-                error: null
-            };
-        case "SORT_ALL_FAIL":
+        case "SORT_PAGE_FAIL":
             return {
                 ...state,
                 isLoading: false,

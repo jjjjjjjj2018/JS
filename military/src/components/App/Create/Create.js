@@ -104,9 +104,7 @@ class Create extends React.Component {
                                 maxFileSize={5242880}
                             />
                         </div>
-                        {/*
-                        <input type = 'file' onChange = {this.onDrop}></input>
-                        <br/>*/}
+                        
                         <TextField
                             required
                             id='name'
