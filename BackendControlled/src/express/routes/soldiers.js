@@ -13,12 +13,11 @@ router.route('/').get((req, res) => {
 router.route('/search/:search').get((req, res) => {
   Soldier.find()
     .then(soldiers => {
-      
-        const results = soldiers.filter((value) => {
-          return value.name.includes(req.params.search) ||
-            value.sex.includes(req.params.search) || value.rank.includes(req.params.search) ||
-            value.email.includes(req.params.search);
-        });
+      const results = soldiers.filter((value) => {
+        return value.name.includes(req.params.search) ||
+          value.sex.includes(req.params.search) || value.rank.includes(req.params.search) ||
+          value.email.includes(req.params.search);
+      });
       res.json(results);
     })
     .catch(err => res.status(400).json('Error: ' + err));
@@ -122,7 +121,7 @@ router.route('/edit/:id').post((req, res) => {
             oldParent.numOfChildren--;
             oldParent.save();
           });
-
+      newSoldier.avatar = req.body.avatar;
       newSoldier.name = req.body.name;
       newSoldier.sex = req.body.sex;
       newSoldier.rank = req.body.rank;

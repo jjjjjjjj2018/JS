@@ -263,7 +263,7 @@ export function createSoldier(soldier, history) {
     dispatch(createOneStart());
     axios
       .post('http://localhost:8080/soldiers/create', soldier)
-      .then(() => { dispatch(createOneSuccess()); dispatch(getSortPage(null, null, 0)) })
+      .then(() => { dispatch(createOneSuccess()) })
       .then(() => history.push('/'))
       .catch(err => { dispatch(createOneFail(err)); });
   };
@@ -274,7 +274,7 @@ export function editSoldier(id, soldier, history) {
     dispatch(editOneStart());
     axios
       .post(`http://localhost:8080/soldiers/edit/${id}`, soldier)
-      .then(() => { dispatch(editOneSuccess()); dispatch(getSortPage(null, null, 0)) })
+      .then(() => { dispatch(editOneSuccess()) })
       .then(history.push('/'))
       .catch(err => { dispatch(editOneFail(err)); });
   };
