@@ -57,7 +57,6 @@ function searchAllFail(error) {
   };
 }
 
-
 //get one soldier action
 function getOneStart() {
   return {
