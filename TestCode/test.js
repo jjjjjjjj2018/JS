@@ -1,3 +1,3 @@
-let x = 4;
-
-x === 1 ? console.log('123') : console.log(x)
+let arr = [[1, 2], [3, 4, 5], [6, 7, 8, 9]];
+let newArr = arr.reduce((prev, curr) => prev.concat(curr));
+console.log(newArr);
