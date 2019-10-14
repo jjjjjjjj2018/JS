@@ -33,7 +33,7 @@ const soldierList = (state = initState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                list: initState.list.concat(action.data),
+                list: state.list.concat(action.data),
                 error: null
             };
         case "SORT_PAGE_FAIL":

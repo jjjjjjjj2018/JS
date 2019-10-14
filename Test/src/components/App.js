@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from '../src/Comp';
-import { addOne, minOne } from './redux/actions';
+import Button from './Button';
+import { addOne, minOne } from '../redux/actions';
 import { connect } from 'react-redux';
 
 class App extends React.Component {
