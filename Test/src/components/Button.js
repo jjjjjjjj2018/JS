@@ -1,11 +1,10 @@
 import React from 'react';
 
-function Button(props) {
+const Button = (props) => {
     return (
         <button onClick={props.onClick}>{props.id}</button>
     )
 }
-
 
 
 export default Button;
