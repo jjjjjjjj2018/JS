@@ -2,7 +2,7 @@ const express = require('express');
 let Soldier = require('../model/soldier.model');
 const router = express.Router();
 
-//get all userss
+//get all users
 router.route('/').get((req, res) => {
   Soldier.find().populate('parentId', 'name')
     .then(soldiers => res.json(soldiers))

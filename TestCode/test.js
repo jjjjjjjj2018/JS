@@ -16,40 +16,6 @@ const peopleObject = peopleArray.reduce((obj, item) => {
 console.log(peopleObject)
 */
 
-/*const arr = [[1, 2, 3], [], [], [4, 5], [1], [6, 7, 8]]
-Array.prototype.next = function () {
-    let num;
-    if (typeof counter === 'undefined') {
-        counter = 0;
-    }
-    while (this[counter].length == 0)
-        counter++;
-    if (typeof innerCounter === 'undefined' || innerCounter < this[counter].length) {
-        if (Array.isArray(this[counter])) {
-            if (typeof innerCounter === 'undefined') {
-                innerCounter = 0;
-            }
-            num = this[counter][innerCounter];
-            innerCounter++;
-            if (innerCounter == this[counter].length)
-                counter++;
-            return num;
-        }
-    }
-
-    num = this[counter];
-    counter++;
-    return num;
-}
-console.log(arr.next());
-console.log(arr.next());
-console.log(arr.next());
-console.log(arr.next());
-console.log(arr.next());
-console.log(arr.next());
-*/
-
-
 /*const arr = [5, 5, 5, 2, 2, 2, 2, 2, 9, 4];
 const count = (arr) => {
     let objArr = {};
@@ -79,4 +45,22 @@ for (let i = small.length; i < large.length - small.length; i++) {
 let num = parseInt(sub) + parseInt(small);
 large = large + num.toString();
 console.log(large);
+*/
+
+/*
+const arr = [[1, 2, 3], [], [], [4, 5], [], [6, 7, 8]];
+Array.prototype.next = function () {
+    if (typeof newArr == 'undefined')
+        newArr = Array.from(arr);
+
+    if (Array.isArray(newArr[0]))
+        this.next();
+    console.log(newArr.shift());
+}
+arr.next();
+arr.next();
+arr.next();
+arr.next();
+arr.next();
+console.log(arr);
 */

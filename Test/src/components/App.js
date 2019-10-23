@@ -13,7 +13,7 @@ class App extends React.Component {
   }
   handleClick() {
     this.setState({ test: 'clicked ' });
-  }
+  } 
   plusOne = () => {
     this.props.P1()
   }

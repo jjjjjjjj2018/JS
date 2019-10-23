@@ -115,7 +115,7 @@ const styles = makeStyles(theme => ({
         flex: '0.8 0',
     }
 }));
-
+const classes = styles();
 const toCreate = props => <AddIcon onClick={() => { props.history.push('/create') }} />;
 
 const toEdit = props => <EditIcon onClick={() => {
