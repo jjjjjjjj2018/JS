@@ -1,6 +1,4 @@
-enum list {
-	tomato = 0,
-	onion = 2,
-	potato
-}
-console.log(list.potato);
+export {};
+let msg = 'hello';
+console.log(msg);
+
