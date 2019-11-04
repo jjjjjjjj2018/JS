@@ -66,7 +66,12 @@ console.log(arr);
 
 
 */
+let arr = { test: [{ name: "123", id: "456" }] };
 
-let arr = [1, 2, 3, 3, 4, 5];
-arr.forEach((num, i) => arr[i] = num * 2)
-console.log(arr);
+const clone = (obj) => {
+    return obj = [...obj];
+}
+
+let cloned = clone(arr);
+cloned.test.id = '123';
+console.log(cloned);
