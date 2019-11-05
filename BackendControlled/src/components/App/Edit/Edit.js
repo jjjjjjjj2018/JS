@@ -115,9 +115,7 @@ class Edit extends React.Component {
                             imgExtension={['.jpg', '.gif', '.png', '.gif']}
                             maxFileSize={5242880}
                         />
-                        {/*
-                        <input type = 'file' onChange = {this.onDrop}></input>
-                        <br/>*/}
+                        
                         <TextField
                             required
                             id='name'
