@@ -63,15 +63,34 @@ arr.next();
 arr.next();
 arr.next();
 console.log(arr);
-
-
 */
-let arr = { test: [{ name: "123", id: "456" }] };
 
-const clone = (obj) => {
-    return obj = [...obj];
+/* flat nested array
+const arr = [[10, [18, 45, 79]], 20, [30, 33], 40];
+const flatten = arr => {
+    return arr.reduce((acc, cur) => {
+      return !Array.isArray(cur) ? [...acc, cur] : [...acc, ...flatten(cur)];
+    }, []);
+   };
+   
+console.log(flatten(arr));
+*/
+
+/* limit function time call
+function fnLimiter(limit, callback) {
+	count = 0;
+  return function(a,b){
+		if (count >= limit){
+  		console.log('max reached');
+  		return;
+  	}
+		count++;
+  	return callback(...params);
+  }
 }
-
-let cloned = clone(arr);
-cloned.test.id = '123';
-console.log(cloned);
+const fn = fnLimiter(3, (a,b) => a * b);
+fn(2,5);
+fn(5,3);
+fn(4,5);
+fn(2,7);
+*/

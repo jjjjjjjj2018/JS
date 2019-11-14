@@ -228,7 +228,6 @@ class App extends React.Component {
                                             onRequestSort={this.handleRequestSort}
                                         />
                                         <TableBody>
-
                                             {list.map(row => {
                                                 return (
                                                     <TableRow key={row._id} hover tabIndex={-1}>

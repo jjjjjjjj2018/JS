@@ -7,7 +7,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      test: 0
+      test: false
     }
     this.handleClick = this.handleClick.bind(this);
   }
@@ -22,7 +22,7 @@ class App extends React.Component {
   }
   render() {
     return (
-      <div className='container' tabindex="1">
+      <div className='container'>
         <div className='div1'>
           <Button className='btn' onClick={this.plusOne} id='+1'>
           </Button>
@@ -51,7 +51,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     P1: () => {
-      dispatch(addOne());
+      dispatch({addOne()});
     },
     M1: () => {
       dispatch(minOne());
