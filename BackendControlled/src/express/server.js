@@ -17,7 +17,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Methods", "*");
     console.log("requst url = " + req.url);
     next();
-})
+});
 app.use('/soldiers', soldiersRouter);
 
 const db = mongoose.connection;

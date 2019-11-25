@@ -1,4 +1,4 @@
-const initState = { num: 10 }
+const initState = { num: 10 };
 const number = (state = initState, action) => {
     switch (action.type) {
         case 'ADD_ONE':

@@ -108,6 +108,5 @@ function twoSum(arr, S) {
   }
   return sums;
 }
-
 console.log(twoSum([3, 5, 2, -4, 8, 11], 7).toString());
 */ 
