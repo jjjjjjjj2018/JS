@@ -33,7 +33,6 @@ const headRows = [
     { id: 'email', numeric: false, label: 'Email' },
     //{ id: 'startDate', numeric: true, label: 'Start Date' },
 
-
     // { id: 'phone', numeric: false, label: 'Phone' },
     // { id: 'email', numeric: false, label: 'Email' },
     // { id: 'numOfChildren', numeric: false, label: '# of D.S.' }

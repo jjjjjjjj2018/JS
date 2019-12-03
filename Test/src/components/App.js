@@ -12,7 +12,6 @@ class App extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick() {
-    console.log(this);
     this.setState({ test: 'clicked ' });
   }
   plusOne = () => {
@@ -29,7 +28,6 @@ class App extends React.Component {
           </Button>
           <Button className='btn' onClick={this.minusOne} id='-1'>
           </Button>
-          <button onClick={this.handleClick}>alsdjakd</button>
           <div>
             {this.props.number}
           </div>
