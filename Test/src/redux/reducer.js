@@ -12,7 +12,7 @@ const number = (state = initState, action) => {
                 num: state.num - 1
             };
         default:
-            return state;
+            return { ...state };
     }
 }
 export default number;

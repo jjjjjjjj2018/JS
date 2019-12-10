@@ -20,21 +20,42 @@
             background-color: coral;
             border-radius: 30px;
         }
-        a:hover{
+
+        a:hover {
             background-color: red;
         }
-        #pageTwo{
+
+        #pageTwo {
             background-color: black;
         }
     </style>
 </head>
 
 <body>
-    <div>
-        <link><a id='home' href=" /">Home</a></link>
-        <link><a id='pageOne' href="/one">Page One</a></link>
-        <link><a id='pageTwo' href="/two">Page Two</a></link>
-    </div>
+
+    <div class="label">Text: <span class="result"></span></div>
+
+    <button class="button" type="button" onClick={onClick()}>Click</button>
+
+
+    <script>
+
+        class Module {
+
+            constructor() {
+
+                this.message = "Success"
+
+            }
+
+            onClick(event) {
+
+                document.querySelector(".result").textContent = this.message || "Error";
+
+            }
+
+        } 
+    </script>
 </body>
 
 </html>
