@@ -1,0 +1,13 @@
+.container {
+  background-color: black;
+}
+li {
+  justify-content: space-around;
+}
+ul {
+  display: flex;
+}
+.title-img {
+  height: 50px;
+  width: 100px;
+}

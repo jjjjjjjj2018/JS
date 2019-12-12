@@ -1,4 +1,5 @@
 const initState = { num: 10 };
+
 const number = (state = initState, action) => {
     switch (action.type) {
         case 'ADD_ONE':
@@ -15,4 +16,5 @@ const number = (state = initState, action) => {
             return { ...state };
     }
 }
+
 export default number;

@@ -48,6 +48,7 @@ const mapStateToProps = (state) => {
     number: state.num
   }
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
     P1: () => {
@@ -58,4 +59,5 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(App);
