@@ -1,24 +1,33 @@
 .container {
   background-color: black;
 }
+ul {
+  display: flex;
+}
+li {
+  padding: 20px;
+  display: block;
+}
 .title-bar-container {
   background-color: darkgray;
 }
 .list-container {
   margin: 10px;
 }
-ul {
-  display: flex;
-}
-li {
+font {
   display: block;
 }
-.myList-item {
-  padding: 20px;
+button {
+  display: block;
+  left: 0;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
 }
-.recommendations-item {
-  padding: 20px;
+.list-container:hover button {
+  opacity: 1;
 }
+
 .title-img {
   height: 50px;
   width: 120px;

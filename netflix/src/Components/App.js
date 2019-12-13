@@ -43,15 +43,20 @@ class App extends React.Component {
         <div className='title-bar-container'>
           <img className='title-img' alt='logo' src={'https://assets.brand.microsites.netflix.io/assets/1ed15bca-b389-11e7-9274-06c476b5c346_cm_800w.png?v=21'} />
         </div>
+
         <div className='list-container'>
-          <div className='myList'>
-            <font color="white">My List</font>
-            <ul>{myListElements}</ul>
-          </div>
-          <font color='white'>Recommendations</font>
-          <div className='recommendations'>
-            <ul>{recommendationsElements}</ul>
-          </div>
+          {myList.length !== 0 &&
+            <div className='myList'>
+              <font color="white">My List</font>
+              <ul>{myListElements}</ul>
+            </div>
+          }
+          {recommendations.length !== 0 &&
+            <div className='recommendations'>
+              <font color='white'>Recommendations</font>
+              <ul>{recommendationsElements}</ul>
+            </div>
+          }
           <div className='myList-items'>
             <ul>{myListTitles}</ul>
           </div>
