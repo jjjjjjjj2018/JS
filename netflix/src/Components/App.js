@@ -5,7 +5,7 @@ import List from './List';
 import './App.css';
 
 const App = (props) => {
-  const { myList, recommendations } = props;
+  const { mylist, recommendations } = props;
 
   const removeFromList = (id) => {
     props.removeFromList(id);
@@ -15,7 +15,7 @@ const App = (props) => {
     props.moveToMyList(id);
   }
 
-  const myListTitles = myList.map(item => {
+  const mylistTitles = mylist.map(item => {
     return (
       <li key={item.id} >
         <font color='white'>{item.title}</font>
@@ -29,10 +29,10 @@ const App = (props) => {
         <img className='title-img' alt='logo' src={'https://assets.brand.microsites.netflix.io/assets/1ed15bca-b389-11e7-9274-06c476b5c346_cm_800w.png?v=21'} />
       </div>
       <div >
-        {myList.length !== 0 &&
+        {mylist.length !== 0 &&
           <List
             name='My List'
-            list={myList}
+            list={mylist}
             click={removeFromList}
             btnName='Remove' />
         }
@@ -42,7 +42,7 @@ const App = (props) => {
           click={moveToMyList}
           btnName='Add to MyList' />
         <div className='list-title-container'>
-          <ul>{myListTitles}</ul>
+          <ul>{mylistTitles}</ul>
         </div>
       </div>
     </div>
@@ -50,12 +50,8 @@ const App = (props) => {
 
 }
 
-const mapStateToProps = (state) => {
-  return {
-    myList: state.mylist,
-    recommendations: state.recommendations
-  }
-}
+const mapStateToProps = ({ mylist, recommendations }) => ({ mylist, recommendations })
+
 
 const mapDispatchToProps = (dispatch) => {
   return {
