@@ -10,6 +10,10 @@ li {
 .title-bar-container {
   background-color: darkgray;
 }
+.title-img {
+  height: 50px;
+  width: 120px;
+}
 .list-container {
   margin: 10px;
 }
@@ -25,9 +29,4 @@ button {
 }
 li:hover button {
   opacity: 1;
-}
-
-.title-img {
-  height: 50px;
-  width: 120px;
 }
