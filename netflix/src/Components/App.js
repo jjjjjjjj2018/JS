@@ -1,8 +1,8 @@
 import React from 'react';
-import './App.css';
-import { removeFromList, moveToMyList } from '../redux/actions';
 import { connect } from 'react-redux';
-import List from './List'
+import { removeFromList, moveToMyList } from '../redux/actions';
+import List from './List';
+import './App.css';
 
 const App = (props) => {
   const { myList, recommendations } = props;
