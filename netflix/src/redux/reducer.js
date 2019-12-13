@@ -45,11 +45,11 @@ const list = (state = initState, action) => {
         case 'MOVE_TO_LIST':
             return {
                 ...state,
-                mylist: [...state.mylist,state.recommendations.find(({ id }) => id === action.id)],
+                mylist: [...state.mylist, state.recommendations.find(({ id }) => id === action.id)],
                 recommendations: state.recommendations.filter(item => item.id !== action.id)
             };
         default:
-            return state
+            return state;
     }
 }
 export default list;

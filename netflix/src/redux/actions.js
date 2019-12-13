@@ -1,12 +1,12 @@
-export function removeFromList(id) {
+export const removeFromList = (id) => {
     return {
         type: 'REMOVE_ITEM',
-        id: id
+        id
     }
 }
-export function moveToMyList(id) {
+export const moveToMyList = (id) => {
     return {
         type: 'MOVE_TO_LIST',
-        id: id
+        id
     }
 }
