@@ -40,6 +40,7 @@ const list = (state = initState, action) => {
         case 'REMOVE_ITEM':
             return {
                 ...state,
+                recommendations: [...state.recommendations, state.mylist.find(({ id }) => id === action.id)],
                 mylist: state.mylist.filter(item => item.id !== action.id)
             };
         case 'MOVE_TO_LIST':
