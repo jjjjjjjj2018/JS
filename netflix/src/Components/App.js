@@ -41,7 +41,6 @@ const App = (props) => {
           list={recommendations}
           click={moveToMyList}
           btnName='Add to MyList' />
-
         <div className='list-title-container'>
           <ul>{myListTitles}</ul>
         </div>

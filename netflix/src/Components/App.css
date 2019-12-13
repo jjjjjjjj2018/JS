@@ -1,9 +1,8 @@
+html {
+  background-color: black;
+}
 body {
   margin: 0;
-}
-.container {
-  background-color: black;
-  height: 100vw;
 }
 ul {
   display: flex;
