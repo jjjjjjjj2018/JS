@@ -12,22 +12,21 @@ class App extends React.Component {
   }
   render() {
     const { props: { myList, recommendations } } = this;
-    console.log(myList);
     const myListElements = myList.map(item => {
       return (
         <li className='myList-item' key={item.id} >
-          <button className='remove-btn' onClick={() => this.removeFromList(item.id)}>x</button>
-          <img src={item.img} alt={item.title}></img>
           <font color='white'>{item.title}</font>
+          <img src={item.img} alt={item.title}></img>
+          <button className='remove-btn' onClick={() => this.removeFromList(item.id)}>Remove</button>
         </li>
       )
     });
     const recommendationsElements = recommendations.map(item => {
       return (
         <li className='recommendations-item' key={item.id} >
-          <button className='move-btn' onClick={() => this.moveToMyList(item.id)}></button>
-          <img src={item.img} alt={item.title}></img>
           <font color='white'>{item.title}</font>
+          <img src={item.img} alt={item.title}></img>
+          <button className='move-btn' onClick={() => this.moveToMyList(item.id)}>Add to MyList</button>
         </li>
 
       )

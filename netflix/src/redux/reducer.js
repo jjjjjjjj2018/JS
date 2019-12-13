@@ -43,10 +43,10 @@ const list = (state = initState, action) => {
                 mylist: state.mylist.filter(item => item.id !== action.id)
             };
         case 'MOVE_TO_LIST':
-            console.log(state.recommendations.find(({ id }) => id === action.id));
+            let newList = state.mylist.concat(state.recommendations.find(({ id }) => id === action.id))
             return {
                 ...state,
-                mylist: state.mylist.concat(state.recommendations.find(({ id }) =>id === action.id)),
+                mylist: newList,
                 recommendations: state.recommendations.filter(item => item.id !== action.id)
             };
         default:
