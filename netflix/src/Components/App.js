@@ -7,14 +7,6 @@ import './App.css';
 const App = (props) => {
   const { mylist, recommendations } = props;
 
-  const removeFromList = (id) => {
-    props.removeFromList(id);
-  }
-
-  const moveToMyList = (id) => {
-    props.moveToMyList(id);
-  }
-
   const mylistTitles = mylist.map(item => {
     return (
       <li key={item.id} >
@@ -33,13 +25,13 @@ const App = (props) => {
           <List
             name='My List'
             list={mylist}
-            click={removeFromList}
+            click={props.removeFromList}
             btnName='Remove' />
         }
         <List
           name='Recommendations'
           list={recommendations}
-          click={moveToMyList}
+          click={props.moveToMyList}
           btnName='Add to MyList' />
         <div className='list-title-container'>
           <ul>{mylistTitles}</ul>
@@ -51,7 +43,6 @@ const App = (props) => {
 }
 
 const mapStateToProps = ({ mylist, recommendations }) => ({ mylist, recommendations })
-
 
 const mapDispatchToProps = (dispatch) => {
   return {
