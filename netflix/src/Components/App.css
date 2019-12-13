@@ -1,5 +1,5 @@
 body {
-  margin: 0;  
+  margin: 0;
 }
 .container {
   background-color: black;
@@ -11,7 +11,7 @@ ul {
   justify-content: flex-start;
 }
 li {
-  padding: 20px;
+  padding: 10px;
 }
 .title-bar-container {
   background-color: darkgray;
@@ -36,4 +36,8 @@ font {
 }
 .img-btn-container:hover .button {
   opacity: 1;
+}
+.list-title-container {
+  position: relative;
+  top: 120px;
 }
