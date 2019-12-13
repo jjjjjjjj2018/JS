@@ -13,10 +13,10 @@ li {
   padding: 10px;
 }
 .title-bar-container {
-  background-color: darkgray;
+  background-color: rgb(32, 32, 32);
 }
 .title-img {
-  height: 50px;
+  height: 60px;
   width: 120px;
 }
 .list-container {
