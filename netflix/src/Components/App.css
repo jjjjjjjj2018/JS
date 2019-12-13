@@ -24,7 +24,7 @@ button {
   opacity: 0;
   transition: opacity 0.35s ease;
 }
-.list-container:hover button {
+li:hover button {
   opacity: 1;
 }
 
