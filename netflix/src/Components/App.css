@@ -10,6 +10,9 @@
 ul {
   display: flex;
 }
+li {
+  display: block;
+}
 .myList-item {
   padding: 20px;
 }
