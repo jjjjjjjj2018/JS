@@ -36,13 +36,12 @@ const App = (props) => {
             click={removeFromList}
             btnName='Remove' />
         }
-        {recommendations.length !== 0 &&
-          <List
-            name='Recommendations'
-            list={recommendations}
-            click={moveToMyList}
-            btnName='Add to MyList' />
-        }
+        <List
+          name='Recommendations'
+          list={recommendations}
+          click={moveToMyList}
+          btnName='Add to MyList' />
+
         <div>
           <ul>{myListTitles}</ul>
         </div>
