@@ -17,7 +17,7 @@ class App extends React.Component {
         <li className='myList-item' key={item.id} >
           <font color='white'>{item.title}</font>
           <img src={item.img} alt={item.title}></img>
-          <button className='remove-btn' onClick={() => this.removeFromList(item.id)}>Remove</button>
+          <button className='button' onClick={() => this.removeFromList(item.id)} color='white'>Remove</button>
         </li>
       )
     });
@@ -26,7 +26,7 @@ class App extends React.Component {
         <li className='recommendations-item' key={item.id} >
           <font color='white'>{item.title}</font>
           <img src={item.img} alt={item.title}></img>
-          <button className='move-btn' onClick={() => this.moveToMyList(item.id)}>Add to MyList</button>
+          <button className='button' onClick={() => this.moveToMyList(item.id)}>Add to MyList</button>
         </li>
 
       )

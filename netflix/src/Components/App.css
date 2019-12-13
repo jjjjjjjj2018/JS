@@ -1,8 +1,11 @@
 .container {
   background-color: black;
+  height:100vw;
 }
 ul {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
 }
 li {
   padding: 20px;
@@ -19,14 +22,15 @@ li {
 }
 font {
   display: block;
-}
-button {
-  display: block;
+  padding: 10px;
   left: 0;
-  text-align: center;
+}
+.button {
+  display: block;
+  text-align: center; 
   opacity: 0;
   transition: opacity 0.35s ease;
 }
-li:hover button {
+li:hover .button {
   opacity: 1;
 }
