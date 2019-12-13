@@ -5,31 +5,37 @@ import { connect } from 'react-redux';
 
 class App extends React.Component {
   removeFromList = (id) => {
-    this.props.removeFromList(id)
+    this.props.removeFromList(id);
   }
   moveToMyList = (id) => {
     this.props.moveToMyList(id);
   }
   render() {
     const { props: { myList, recommendations } } = this;
+    console.log(myList);
     const myListElements = myList.map(item => {
       return (
-        <li key={item.id} onClick={this.removeFromList}>
+        <li className='myList-item' key={item.id} >
+          <button className='remove-btn' onClick={() => this.removeFromList(item.id)}>x</button>
           <img src={item.img} alt={item.title}></img>
+          <font color='white'>{item.title}</font>
         </li>
       )
     });
     const recommendationsElements = recommendations.map(item => {
       return (
-        <li key={item.id} onClick={this.moveToMyList}>
+        <li className='recommendations-item' key={item.id} >
+          <button className='move-btn' onClick={() => this.moveToMyList(item.id)}></button>
           <img src={item.img} alt={item.title}></img>
+          <font color='white'>{item.title}</font>
         </li>
+
       )
     });
     const myListTitles = myList.map(item => {
       return (
         <li key={item.id} >
-          <font color = 'white'>{item.title}</font>
+          <font color='white'>{item.title}</font>
         </li>
       )
     });

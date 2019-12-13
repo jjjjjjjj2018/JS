@@ -34,18 +34,23 @@ const initState = {
         }
     ]
 }
+
 const list = (state = initState, action) => {
     switch (action.type) {
         case 'REMOVE_ITEM':
             return {
                 ...state,
+                mylist: state.mylist.filter(item => item.id !== action.id)
             };
         case 'MOVE_TO_LIST':
+            console.log(state.recommendations.find(({ id }) => id === action.id));
             return {
                 ...state,
+                mylist: state.mylist.push(state.recommendations.find(({ id }) => id === action.id)),
+                recommendations: state.recommendations.filter(item => item.id !== action.id)
             };
         default:
-            return state 
+            return state
     }
 }
 export default list;

@@ -1,13 +1,31 @@
 .container {
   background-color: black;
 }
-li {
-  justify-content: space-around;
+.title-bar-container {
+  background-color: darkgray;
+}
+.list-container {
+  margin: 10px;
+}
+.remove-btn {
+  background-color: black;
+  cursor: pointer;
+  right: 0%;
+  transform: translate(0%, -50%);
+}
+.remove-btn:hover {
+  background: #bbb;
 }
 ul {
   display: flex;
 }
+.myList-item {
+  padding: 20px;
+}
+.recommendations-item {
+  padding: 20px;
+}
 .title-img {
   height: 50px;
-  width: 100px;
+  width: 120px;
 }
