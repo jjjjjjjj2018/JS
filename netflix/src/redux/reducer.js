@@ -46,7 +46,7 @@ const list = (state = initState, action) => {
             console.log(state.recommendations.find(({ id }) => id === action.id));
             return {
                 ...state,
-                mylist: state.mylist.push(state.recommendations.find(({ id }) => id === action.id)),
+                mylist: state.mylist.concat(state.recommendations.find(({ id }) =>id === action.id)),
                 recommendations: state.recommendations.filter(item => item.id !== action.id)
             };
         default:
