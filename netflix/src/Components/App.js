@@ -6,7 +6,7 @@ import List from './List'
 
 const App = (props) => {
   const { myList, recommendations } = props;
-  
+
   const removeFromList = (id) => {
     props.removeFromList(id);
   }
@@ -14,7 +14,7 @@ const App = (props) => {
   const moveToMyList = (id) => {
     props.moveToMyList(id);
   }
-  
+
   const myListTitles = myList.map(item => {
     return (
       <li key={item.id} >
