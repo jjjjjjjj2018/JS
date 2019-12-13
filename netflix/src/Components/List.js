@@ -11,7 +11,7 @@ const List = (props) => {
                         <li key={item.id} >
                             <font color='white'>{item.title}</font>
                             <div className='img-btn-container'>
-                                <img src={item.img} alt={item.title}></img>
+                                <img src={item.img} alt={item.title}/>
                                 <button className='button' onClick={() => props.click(item.id)}>{props.btnName}</button>
                             </div>
                         </li>
