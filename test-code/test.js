@@ -1,2 +1,2 @@
-let str = 'lskj'
-console.log(str[0]);
+(setTimeout(() => { console.log('time') }, 1000))()
+console.log('no');
