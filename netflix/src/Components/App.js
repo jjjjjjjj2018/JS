@@ -1,18 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { getAll, removeFromList, moveToMyList } from '../redux/actions';
 import List from './List';
 import './App.css';
 
 const App = (props) => {
-  useEffect(() => {
+  useLayoutEffect(() => {
     props.getAll();
   }, []);
 
+  useLayoutEffect(() => {
+    window.scrollTo(0, scollPosition);
+  }, [props]);
+
+  const [scollPosition, setScollPosition] = useState();
   const { list: { mylist, recommendations }, error, isLoading } = props;
 
+  const removeFromList = (id) => {
+    props.removeFromList(id);
+    setScollPosition(window.pageYOffset);
+  }
+  const moveToMyList = (id) => {
+    props.moveToMyList(id);
+    setScollPosition(window.pageYOffset);
+  }
+
   return (
-    <div className="container">
+    <div className="container" >
       <div className='title-bar-container'>
         <img className='title-img' alt='logo' src='https://assets.brand.microsites.netflix.io/assets/1ed15bca-b389-11e7-9274-06c476b5c346_cm_800w.png?v=21' />
       </div>
@@ -23,14 +37,14 @@ const App = (props) => {
             <List
               name='My List'
               list={mylist}
-              click={props.removeFromList}
+              click={removeFromList}
               btnName='Remove' />
           }
           {recommendations &&
             <List
               name='Recommendations'
               list={recommendations}
-              click={props.moveToMyList}
+              click={moveToMyList}
               btnName='Add to MyList' />
           }
           <div className='list-title-container'>
