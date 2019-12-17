@@ -1,24 +1,62 @@
 const initState = {
-    mylist: [],
-    recommendations: []
+    list: {},
+    error: null,
+    isLoading: false
 }
 
-const list = (state = initState, action) => {
+const lists = (state = initState, action) => {
     switch (action.type) {
-        case 'REMOVE_ITEM':
+        case 'GET_START':
             return {
                 ...state,
-                recommendations: [...state.recommendations, state.mylist.find(({ id }) => id === action.id)],
-                mylist: state.mylist.filter(item => item.id !== action.id)
+                isLoading: true
             };
-        case 'MOVE_TO_LIST':
+        case 'GET_SUCCESS':
             return {
                 ...state,
-                mylist: [...state.mylist, state.recommendations.find(({ id }) => id === action.id)],
-                recommendations: state.recommendations.filter(item => item.id !== action.id)
+                list: action.data,
+                isLoading: false
+            };
+        case 'GET_FAIL':
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false
+            };
+        case 'REMOVE_START':
+            return {
+                ...state,
+                isLoading: true
+            };
+        case 'REMOVE_SUCCESS':
+            return {
+                ...state,
+                isLoading: false
+            };
+        case 'REMOVE_FAIL':
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false
+            };
+        case 'ADD_START':
+            return {
+                ...state,
+                isLoading: true
+            };
+        case 'ADD_SUCCESS':
+            return {
+                ...state,
+                isLoading: false
+            };
+        case 'ADD_FAIL':
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false
             };
         default:
             return state;
     }
 }
-export default list;
+export default lists;

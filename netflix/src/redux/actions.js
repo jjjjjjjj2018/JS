@@ -1,5 +1,5 @@
-
-//get all list action
+import axios from 'axios';
+//get all list items action
 const getStart = () => {
     return {
         type: 'GET_START',
@@ -20,17 +20,16 @@ const getFail = (error) => {
     };
 }
 
+//remove from mylist to recommendations actions
 const removeStart = (id) => {
     return {
-        type: 'REMOVE_START',
-        id
+        type: 'REMOVE_START'
     }
 }
 
 const removeSuccess = (response) => {
     return {
-        type: 'REMOVE_SUCCESS',
-        data: response.data,
+        type: 'REMOVE_SUCCESS'
     };
 }
 
@@ -41,16 +40,15 @@ const removeFail = (error) => {
     };
 }
 
+//add recommendations to mylist actions
 const addStart = () => {
     return {
-        type: 'ADD_START',
-        id
+        type: 'ADD_START'
     }
 }
 const addSuccess = (response) => {
     return {
-        type: 'ADD_SUCCESS',
-        data: response.data,
+        type: 'ADD_SUCCESS'
     };
 }
 
@@ -61,14 +59,14 @@ const addFail = (error) => {
     };
 }
 
-
 export const getAll = () => {
     return (dispatch) => {
         dispatch(getStart());
         axios
-            .get('http://localhost:8080/lists')
+            .get(`http://localhost:8080/lists`)
             .then(response => {
                 dispatch(getSuccess(response));
+                console.log(response.data)
             })
             .catch(err => {
                 dispatch(getFail(err));
@@ -80,9 +78,10 @@ export const removeFromList = (id) => {
     return (dispatch) => {
         dispatch(removeStart());
         axios
-            .get(`http://localhost:8080/lists/remove/${id}`)
-            .then(response => {
-                dispatch(removeSuccess(response));
+            .put(`http://localhost:8080/lists/remove/${id}`)
+            .then(() => {
+                dispatch(removeSuccess());
+                dispatch(getAll());
             })
             .catch(err => {
                 dispatch(removeFail(err));
@@ -94,9 +93,10 @@ export const moveToMyList = (id) => {
     return (dispatch) => {
         dispatch(addStart());
         axios
-            .get(`http://localhost:8080/lists/add/${id}`)
-            .then(response => {
-                dispatch(addSuccess(response));
+            .put(`http://localhost:8080/lists/add/${id}`)
+            .then(() => {
+                dispatch(addSuccess());
+                dispatch(getAll());
             })
             .catch(err => {
                 dispatch(addFail(err));

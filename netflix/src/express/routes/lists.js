@@ -41,13 +41,13 @@ let lists = {
 
 //get all list items
 router.route('/').get((req, res) => {
-    res.status(200).json(lists)
+    res.status(200).json(lists);
 });
 
 //remove from mylist to recommendations
 router.route('/remove/:id').put((req, res) => {
     for (let i = 0; i < lists.mylist.length; i++) {
-        if (lists.mylist[i].id == req.params.id) {
+        if (lists.mylist[i].id === parseInt(req.params.id)) {
             lists.recommendations.push(lists.mylist[i]);
             lists.mylist.splice(i, 1);
             break;
@@ -56,13 +56,13 @@ router.route('/remove/:id').put((req, res) => {
             res.status(400).json('item not found');
         }
     }
-    res.status(200).json(lists);
+    res.status(200);
 });
 
 //add recommendations to mylist
 router.route('/add/:id').put((req, res) => {
     for (let i = 0; i < lists.recommendations.length; i++) {
-        if (lists.recommendations[i].id == req.params.id) {
+        if (lists.recommendations[i].id === parseInt(req.params.id)) {
             lists.mylist.push(lists.mylist[i]);
             lists.recommendations.splice(i, 1);
             break;
@@ -71,7 +71,7 @@ router.route('/add/:id').put((req, res) => {
             res.status(400).json('item not found');
         }
     }
-    res.status(200).json(lists);
+    res.status(200);
 });
 
 module.exports = router;
