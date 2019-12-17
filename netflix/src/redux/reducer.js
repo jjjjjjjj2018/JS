@@ -31,6 +31,7 @@ const lists = (state = initState, action) => {
         case 'REMOVE_SUCCESS':
             return {
                 ...state,
+                list: action.data,
                 isLoading: false
             };
         case 'REMOVE_FAIL':
@@ -47,6 +48,7 @@ const lists = (state = initState, action) => {
         case 'ADD_SUCCESS':
             return {
                 ...state,
+                list: action.data,
                 isLoading: false
             };
         case 'ADD_FAIL':

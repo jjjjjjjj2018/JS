@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getAll, removeFromList, moveToMyList } from '../redux/actions';
 import List from './List';
@@ -8,11 +8,9 @@ const App = (props) => {
   useEffect(() => {
     props.getAll();
   }, []);
-  useEffect(() => {
 
-  }, [props.list]);
   const { list: { mylist, recommendations }, error, isLoading } = props;
-  console.log(props.list);
+
   return (
     <div className="container">
       <div className='title-bar-container'>

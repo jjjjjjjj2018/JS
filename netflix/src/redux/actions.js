@@ -29,7 +29,8 @@ const removeStart = (id) => {
 
 const removeSuccess = (response) => {
     return {
-        type: 'REMOVE_SUCCESS'
+        type: 'REMOVE_SUCCESS',
+        data: response.data
     };
 }
 
@@ -48,7 +49,8 @@ const addStart = () => {
 }
 const addSuccess = (response) => {
     return {
-        type: 'ADD_SUCCESS'
+        type: 'ADD_SUCCESS',
+        data: response.data
     };
 }
 
@@ -63,7 +65,7 @@ export const getAll = () => {
     return (dispatch) => {
         dispatch(getStart());
         axios
-            .get(`http://localhost:8080/lists`)
+            .get('http://localhost:8080/lists')
             .then(response => {
                 dispatch(getSuccess(response));
                 console.log(response.data)
@@ -79,9 +81,8 @@ export const removeFromList = (id) => {
         dispatch(removeStart());
         axios
             .put(`http://localhost:8080/lists/remove/${id}`)
-            .then(() => {
-                dispatch(removeSuccess());
-                dispatch(getAll());
+            .then(response => {
+                dispatch(removeSuccess(response));
             })
             .catch(err => {
                 dispatch(removeFail(err));
@@ -94,9 +95,8 @@ export const moveToMyList = (id) => {
         dispatch(addStart());
         axios
             .put(`http://localhost:8080/lists/add/${id}`)
-            .then(() => {
-                dispatch(addSuccess());
-                dispatch(getAll());
+            .then(response => {
+                dispatch(addSuccess(response));
             })
             .catch(err => {
                 dispatch(addFail(err));

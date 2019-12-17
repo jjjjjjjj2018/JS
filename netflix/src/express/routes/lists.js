@@ -52,26 +52,20 @@ router.route('/remove/:id').put((req, res) => {
             lists.mylist.splice(i, 1);
             break;
         }
-        else {
-            res.status(400).json('item not found');
-        }
     }
-    res.status(200);
+    res.status(200).json(lists);
 });
 
 //add recommendations to mylist
 router.route('/add/:id').put((req, res) => {
     for (let i = 0; i < lists.recommendations.length; i++) {
         if (lists.recommendations[i].id === parseInt(req.params.id)) {
-            lists.mylist.push(lists.mylist[i]);
+            lists.mylist.push(lists.recommendations[i]);
             lists.recommendations.splice(i, 1);
             break;
         }
-        else {
-            res.status(400).json('item not found');
-        }
     }
-    res.status(200);
+    res.status(200).json(lists);
 });
 
 module.exports = router;
